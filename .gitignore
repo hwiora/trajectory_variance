@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Trained model weights (regenerate via training scripts)
+*.pt
+*.pth
+*.ckpt
+
+# Raw data and large intermediate caches (obtain separately, see README)
+*.h5
+*.wav
+*.mp3
+*.flac
+
+# Per-run fig1_data files are included in models/ (see models/fig1_data_R*.npz)
+# Do NOT ignore *.npz globally — the committed reference npz files are needed for figures
+
+# Per-run output directories under models/
+# (We keep models/__init__.py, models/flow.py, models/evaluation_results.json,
+# and models/fad2_summary.json — everything else is regeneratable.)
+Counterfactual_generation/models/vae_*/
+Counterfactual_generation/models/ot_flow_*/
+Counterfactual_generation/models/lcfm_*/
+Counterfactual_generation/models/fad_*/
+Counterfactual_generation/models/cellot_*/
+Counterfactual_generation/models/cpa_*/
+Counterfactual_generation/models/cvae_*/
+Counterfactual_generation/models/condvae_*/
+
+# Generated figures and reports
+figures/
+reports/
+
+# Logs
+*.log

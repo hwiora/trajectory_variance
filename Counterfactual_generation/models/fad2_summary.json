@@ -1,0 +1,104 @@
+{
+  "rows": [
+    {
+      "method": "ot_flow",
+      "bird": "R4634",
+      "fad_inf": 0.059383221307492046,
+      "fad_inf_r2": 0.013425172028953658,
+      "full_fad": 0.05823975913739421,
+      "baseline_fad_inf": 0.0015742939025298998,
+      "baseline_fad_inf_r2": 0.56286628557195,
+      "baseline_full_fad": 0.0021066244424228424,
+      "n_real": 2000,
+      "n_cf": 2000,
+      "flow_dir": "C:\\Kenny\\1.Work\\v2\\antigravity\\Counterfactual_generation\\models\\ot_flow_R4634_20260224_162317",
+      "ae_dir": "C:\\Kenny\\1.Work\\v2\\antigravity\\Counterfactual_generation\\models\\vae_R4634_20260224_024051"
+    },
+    {
+      "method": "ot_flow",
+      "bird": "R4951",
+      "fad_inf": 0.045562966683963535,
+      "fad_inf_r2": 0.16865984179149796,
+      "full_fad": 0.04823076769993818,
+      "baseline_fad_inf": 0.0,
+      "baseline_fad_inf_r2": 0.5751264927930269,
+      "baseline_full_fad": 0.0010894511708605236,
+      "n_real": 2000,
+      "n_cf": 2000,
+      "flow_dir": "C:\\Kenny\\1.Work\\v2\\antigravity\\Counterfactual_generation\\models\\ot_flow_R4951_20260224_151200",
+      "ae_dir": "C:\\Kenny\\1.Work\\v2\\antigravity\\Counterfactual_generation\\models\\vae_R4951_20260224_035117"
+    },
+    {
+      "method": "ot_flow",
+      "bird": "R5018",
+      "fad_inf": 0.03313925255278463,
+      "fad_inf_r2": 0.0766486067932256,
+      "full_fad": 0.029920159630037635,
+      "baseline_fad_inf": 0.03289641114322207,
+      "baseline_fad_inf_r2": 0.012137060598214844,
+      "baseline_full_fad": 0.029340833973256757,
+      "n_real": 2000,
+      "n_cf": 2000,
+      "flow_dir": "C:\\Kenny\\1.Work\\v2\\antigravity\\Counterfactual_generation\\models\\ot_flow_R5018_20260224_124555",
+      "ae_dir": "C:\\Kenny\\1.Work\\v2\\antigravity\\Counterfactual_generation\\models\\vae_R5018_20260224_040422"
+    },
+    {
+      "method": "latent_cfm",
+      "bird": "R4634",
+      "fad_inf": 0.009529463379174081,
+      "fad_inf_r2": 0.17109530956797603,
+      "full_fad": 0.009754396279614538,
+      "baseline_fad_inf": 0.0015330090868710925,
+      "baseline_fad_inf_r2": 0.5658335000154786,
+      "baseline_full_fad": 0.0021078450832279307,
+      "n_real": 2000,
+      "n_cf": 2000,
+      "flow_dir": "C:\\Kenny\\1.Work\\v2\\antigravity\\Counterfactual_generation\\models\\lcfm_R4634_20260305_043213",
+      "ae_dir": "C:\\Kenny\\1.Work\\v2\\antigravity\\Counterfactual_generation\\models\\vae_R4634_20260224_024051"
+    },
+    {
+      "method": "latent_cfm",
+      "bird": "R4951",
+      "fad_inf": 0.017897294811254252,
+      "fad_inf_r2": 0.07018175579140062,
+      "full_fad": 0.020586655358801192,
+      "baseline_fad_inf": 0.0,
+      "baseline_fad_inf_r2": 0.5771441616515578,
+      "baseline_full_fad": 0.0011006131097352728,
+      "n_real": 2000,
+      "n_cf": 2000,
+      "flow_dir": "C:\\Kenny\\1.Work\\v2\\antigravity\\Counterfactual_generation\\models\\lcfm_R4951_20260305_045209",
+      "ae_dir": "C:\\Kenny\\1.Work\\v2\\antigravity\\Counterfactual_generation\\models\\vae_R4951_20260224_035117"
+    },
+    {
+      "method": "latent_cfm",
+      "bird": "R5018",
+      "fad_inf": 0.02220087103499036,
+      "fad_inf_r2": 0.6354668744013781,
+      "full_fad": 0.040355959320666684,
+      "baseline_fad_inf": 0.03288053011676071,
+      "baseline_fad_inf_r2": 0.01242777955000629,
+      "baseline_full_fad": 0.02932928072055852,
+      "n_real": 2000,
+      "n_cf": 2000,
+      "flow_dir": "C:\\Kenny\\1.Work\\v2\\antigravity\\Counterfactual_generation\\models\\lcfm_R5018_20260305_022721",
+      "ae_dir": "C:\\Kenny\\1.Work\\v2\\antigravity\\Counterfactual_generation\\models\\vae_R5018_20260224_040422"
+    }
+  ],
+  "failures": [],
+  "settings": {
+    "birds": [
+      "R4634",
+      "R4951",
+      "R5018"
+    ],
+    "methods": [
+      "ot_flow",
+      "latent_cfm"
+    ],
+    "total_samples": 2000,
+    "seed": 42,
+    "n_points": 10,
+    "n_repeats": 5
+  }
+}

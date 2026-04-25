@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trajectory-variance"
+version = "1.0.0"
+description = "Trajectory Variance: An Unsupervised Measure of Developmental Vocal Plasticity"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "Kanghwi Lee", email = "kanlee.ini@gmail.com" }]
+requires-python = ">=3.9"
+dependencies = [
+    "torch>=2.0",
+    "torchaudio>=2.0",
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "scikit-learn>=1.2",
+    "matplotlib>=3.6",
+    "seaborn>=0.12",
+    "h5py>=3.8",
+    "tqdm>=4.65",
+    "librosa>=0.10",
+    "diptest>=0.5",
+    "geomloss>=0.2",
+]
+
+[project.scripts]
+tv-evaluate   = "Counterfactual_generation.run_evaluations:main"
+tv-train-vae  = "Counterfactual_generation.train_ae:main"
+tv-train-flow = "Counterfactual_generation.train_ot_flow:main"
+tv-label      = "Counterfactual_generation.label_song_calls:main"
+tv-plot-fig2  = "Counterfactual_generation.plot_fig1:main"
+tv-fad        = "Counterfactual_generation.run_fad2_all:main"
+
+[project.urls]
+Repository = "https://github.com/<your-username>/trajectory-variance"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["Counterfactual_generation*"]
