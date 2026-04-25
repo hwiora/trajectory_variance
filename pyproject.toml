@@ -34,7 +34,7 @@ tv-plot-fig2  = "Counterfactual_generation.plot_fig1:main"
 tv-fad        = "Counterfactual_generation.run_fad2_all:main"
 
 [project.urls]
-Repository = "https://github.com/<your-username>/trajectory-variance"
+Repository = "https://github.com/hwiora/trajectory_variance"
 
 [tool.setuptools.packages.find]
 where = ["."]

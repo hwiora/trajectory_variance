@@ -40,17 +40,21 @@ trajectory-variance/
 
 ## Setup
 
+**Requirements:** Python ≥ 3.9, CUDA-capable GPU (training scripts only; plotting and evaluation work on CPU).
+
 **Conda (recommended — matches the environment used to produce the paper):**
 
+> Note: `environment.yml` was exported on Windows. On macOS/Linux use `pip install -e .` instead.
+
 ```bash
-git clone <this-repo>
-cd trajectory-variance
+git clone https://github.com/hwiora/trajectory_variance
+cd trajectory_variance
 conda env create -f environment.yml        # creates the 'preprocess' environment
 conda activate preprocess
 pip install -e .                           # installs the package in editable mode
 ```
 
-**pip only (alternative):**
+**pip only (cross-platform):**
 
 ```bash
 pip install -e .
@@ -67,17 +71,15 @@ See the [Data section](#data) below for the expected directory layout.
 
 ## Data
 
-The raw spectrogram H5 files are not included here — they come from a pre-existing data pipeline and are large. The paper uses three zebra finch datasets (R4634, R4951, R5018; recorded 40–100 dph; 183K–274K vocalizations each). Please contact the author for access if you want to reproduce end-to-end.
+The raw H5 files are not included here — they come from a pre-existing data pipeline and are large (~3.5–4 GB per bird). The paper uses three zebra finch datasets (R4634, R4951, R5018; recorded 40–100 dph; 183K–274K vocalizations each). Please contact the author for access if you want to reproduce end-to-end.
 
-The expected layout under `DATA_ROOT` is:
+The expected layout under `DATA_ROOT` (used by the default `--source h5` flag) is:
 
 ```
 DATA_ROOT/
 └── <bird_id>/
-    └── Preprocess/
-        └── Spectrograms_PadRight/
-            ├── <bird_id>_metadata.pt
-            └── <day_files>.pt
+    └── Processed/
+        └── <bird_id>.h5
 ```
 
 ## Reproducing the paper
@@ -156,12 +158,11 @@ Reproduces `Counterfactual_generation/models/fad2_summary.json` (the 0.01–0.06
 ## Citation
 
 ```bibtex
-@inproceedings{lee2026trajectory,
-  title     = {Trajectory Variance: An Unsupervised Measure of Developmental Vocal Plasticity},
-  author    = {Lee, Kanghwi},
-  booktitle = {Proc. Interspeech},
-  year      = {2026},
-  note      = {To appear}
+@unpublished{lee2026trajectory,
+  title  = {Trajectory Variance: An Unsupervised Measure of Developmental Vocal Plasticity},
+  author = {Lee, Kanghwi},
+  year   = {2026},
+  note   = {Under review at Interspeech 2026}
 }
 ```
 
@@ -171,4 +172,4 @@ MIT — see [LICENSE](LICENSE).
 
 ## Author
 
-Kanghwi Lee — kanlee.ini@gmail.com
+Kanghwi Lee — kanlee@ini.ethz.ch
