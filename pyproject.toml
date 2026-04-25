@@ -30,7 +30,6 @@ tv-evaluate   = "Counterfactual_generation.run_evaluations:main"
 tv-train-vae  = "Counterfactual_generation.train_ae:main"
 tv-train-flow = "Counterfactual_generation.train_ot_flow:main"
 tv-label      = "Counterfactual_generation.label_song_calls:main"
-tv-plot-fig2  = "Counterfactual_generation.plot_fig1:main"
 tv-fad        = "Counterfactual_generation.run_fad2_all:main"
 
 [project.urls]

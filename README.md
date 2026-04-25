@@ -12,16 +12,15 @@ Given a vocalization, how much would it change if produced at a different develo
 ## Repository structure
 
 ```
-trajectory-variance/
+trajectory_variance/
 ├── README.md
 ├── LICENSE
 ├── requirements.txt
+├── environment.yml
+├── pyproject.toml
 ├── .gitignore
 ├── paper/
-│   ├── Trajectory_Variance_Interspeech2026_submitted.pdf
-│   └── figures/
-│       ├── fig1_pipeline.pdf            # Figure 1: pipeline schematic
-│       └── fig1_R{4634,4951,5018}.pdf   # Figure 2: per-bird KDE panels (composed in LaTeX)
+│   └── Trajectory_Variance_Interspeech2026_submitted.pdf
 └── Counterfactual_generation/           # Python package
     ├── train_ae.py                      # Spectrogram VAE
     ├── train_ot_flow.py                 # Displacement model (OT-coupled)
@@ -29,13 +28,13 @@ trajectory-variance/
     ├── baseline_comparison.py           # All baseline transports + variance computation
     ├── analyze_plasticity.py            # Acoustic-feature streaming
     ├── run_evaluations.py               # → models/evaluation_results.json (Tables 1+2)
-    ├── plot_fig1.py                     # → per-bird KDE panels for Figure 2
     ├── compute_fad2.py, run_fad2_all.py # FAD evaluation (Discussion)
     ├── utils.py                         # DATA_ROOT, helpers
     └── models/
         ├── flow.py                      # Displacement-model architecture & loader
         ├── evaluation_results.json      # Reference output for Tables 1+2
-        └── fad2_summary.json            # Reference output for FAD numbers
+        ├── fad2_summary.json            # Reference output for FAD numbers
+        └── fig1_data_R{4634,4951,5018}.npz  # Pre-computed per-vocalization variances + labels
 ```
 
 ## Setup
@@ -127,24 +126,11 @@ python -m Counterfactual_generation.run_evaluations
 
 Output: `Counterfactual_generation/models/evaluation_results.json`. A **reference copy is committed** to this repo — diff your re-run against it to verify you reproduced the exact paper numbers.
 
-### Figure 2 (per-bird KDE panels)
+### Figures
 
-The committed `Counterfactual_generation/models/fig1_data_R{4634,4951,5018}.npz` files contain the pre-computed per-vocalization variances and labels for each bird — you can go straight to plotting **without re-training**:
+The committed `Counterfactual_generation/models/fig1_data_R{4634,4951,5018}.npz` files contain the pre-computed per-vocalization variances and labels used to produce Figure 2 (KDE panels). Each file has three arrays: `variances`, `is_song` (bool), and `durations`.
 
-```bash
-python -m Counterfactual_generation.plot_fig1 \
-    --npz Counterfactual_generation/models/fig1_data_R4634.npz --output fig1_R4634.pdf
-python -m Counterfactual_generation.plot_fig1 \
-    --npz Counterfactual_generation/models/fig1_data_R4951.npz --output fig1_R4951.pdf
-python -m Counterfactual_generation.plot_fig1 \
-    --npz Counterfactual_generation/models/fig1_data_R5018.npz --output fig1_R5018.pdf
-```
-
-The submitted Figure 2 is the three panels composed in LaTeX (`\subfloat`).  The pre-built PDFs are in [`paper/figures/`](paper/figures/).
-
-### Figure 1 (pipeline schematic)
-
-The submitted Figure 1 is a hand-composed schematic; the PDF is committed at [`paper/figures/fig1_pipeline.pdf`](paper/figures/fig1_pipeline.pdf).
+Figure 1 (pipeline schematic) is a hand-composed diagram included in the submitted PDF.
 
 ### FAD (Discussion section)
 
