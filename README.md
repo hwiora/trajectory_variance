@@ -28,6 +28,7 @@ trajectory_variance/
     ├── baseline_comparison.py           # All baseline transports + variance computation
     ├── analyze_plasticity.py            # Acoustic-feature streaming
     ├── run_evaluations.py               # → models/paper_eval_results.json (Tables 1+2)
+    ├── plot_fig2.py                     # Reproduces Figure 2 (KDE panels)
     ├── compute_fad2.py, run_fad2_all.py # FAD evaluation (Discussion)
     ├── utils.py                         # DATA_ROOT, helpers
     └── models/
@@ -182,9 +183,16 @@ Output: `Counterfactual_generation/models/paper_eval_results.json`. A **referenc
 
 ### Figures
 
-The committed `Counterfactual_generation/models/fig1_data_R{4634,4951,5018}.npz` files contain the pre-computed per-vocalization variances and labels used to produce Figure 2 (KDE panels). Each file has three arrays: `variances`, `is_song` (bool), and `durations`.
+**Figure 2** (KDE panels of duration-residualized trajectory variance, song vs call):
 
-Figure 1 (pipeline schematic) is a hand-composed diagram included in the submitted PDF.
+```bash
+python -m Counterfactual_generation.plot_fig2 --output paper/figures/fig2.pdf
+# or: tv-plot-fig2 --output paper/figures/fig2.pdf
+```
+
+Reads the pre-computed 10K-sample visualization data from `Counterfactual_generation/models/fig1_data_R{4634,4951,5018}.npz` (each containing `variances`, `is_song`, `durations`) for the KDE shape, and pulls the $d_r$ / AUC annotations from `paper_eval_results.json` (3K-sample evaluation, matching how Figure 2 is annotated in the paper).
+
+**Figure 1** (pipeline schematic) is a hand-composed diagram included in the submitted PDF.
 
 ### FAD (Discussion section)
 

@@ -31,6 +31,7 @@ tv-train-vae  = "Counterfactual_generation.train_ae:main"
 tv-train-flow = "Counterfactual_generation.train_ot_flow:main"
 tv-label      = "Counterfactual_generation.label_song_calls:main"
 tv-fad        = "Counterfactual_generation.run_fad2_all:main"
+tv-plot-fig2  = "Counterfactual_generation.plot_fig2:main"
 
 
 [tool.setuptools.packages.find]
