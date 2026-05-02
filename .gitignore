@@ -15,10 +15,12 @@ env/
 .DS_Store
 Thumbs.db
 
-# Trained model weights (regenerate via training scripts)
+# Trained model weights — block by default, allow only the released checkpoints
 *.pt
 *.pth
 *.ckpt
+!Counterfactual_generation/models/vae_*/best.pt
+!Counterfactual_generation/models/ot_flow_*/best.pt
 
 # Raw data and large intermediate caches (obtain separately, see README)
 *.h5
@@ -29,17 +31,29 @@ Thumbs.db
 # Per-run fig1_data files are included in models/ (see models/fig1_data_R*.npz)
 # Do NOT ignore *.npz globally — the committed reference npz files are needed for figures
 
-# Per-run output directories under models/
-# (We keep models/__init__.py, models/flow.py, models/evaluation_results.json,
-# and models/fad2_summary.json — everything else is regeneratable.)
-Counterfactual_generation/models/vae_*/
-Counterfactual_generation/models/ot_flow_*/
+# Block original 6-feature acoustic cache; allow only the released spectral-flatness cache
+Counterfactual_generation/models/acoustic_features_R*.npz
+
+# Per-run model output dirs — block everything by default, then allow weights+config
+# for the released VAE and displacement-model checkpoints
 Counterfactual_generation/models/lcfm_*/
 Counterfactual_generation/models/fad_*/
 Counterfactual_generation/models/cellot_*/
 Counterfactual_generation/models/cpa_*/
 Counterfactual_generation/models/cvae_*/
 Counterfactual_generation/models/condvae_*/
+
+# Internal/audit artifacts — never publish
+check_alignment.py
+check_lengths.py
+diff_eval.py
+recompute_acoustic.py
+test_flatness_sources.py
+build_spectral_flatness_cache.py
+run_eval.py
+audit_*.json
+audit_h5_only_cache/
+eval_zenodo_check.json
 
 # Generated figures and reports
 figures/

@@ -1,0 +1,23 @@
+{
+  "n_mels": 123,
+  "n_time": 100,
+  "latent_dim": 128,
+  "lr": 0.0003,
+  "batch_size": 128,
+  "epochs": 100,
+  "data_mean": -35.901092529296875,
+  "data_std": 46.37481689453125,
+  "bird": "R4634",
+  "num_params": 8281339,
+  "l2_weight": 0.0001,
+  "n_samples": 222165,
+  "n_train": 199949,
+  "n_val": 22216,
+  "age_min": 40.0,
+  "age_max": 101.0,
+  "source": "h5",
+  "model_type": "vae",
+  "kl_weight": 0.001,
+  "encode_only": false,
+  "init_from": null
+}

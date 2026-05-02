@@ -5,10 +5,10 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "trajectory-variance"
 version = "1.0.0"
-description = "Trajectory Variance: An Unsupervised Measure of Developmental Vocal Plasticity"
+description = "Trajectory Variance: An Unsupervised Measure of Developmental Vocal Plasticity in Birdsong"
 readme = "README.md"
 license = { file = "LICENSE" }
-authors = [{ name = "Kanghwi Lee", email = "kanlee.ini@gmail.com" }]
+authors = [{ name = "Anonymous" }]
 requires-python = ">=3.9"
 dependencies = [
     "torch>=2.0",
@@ -32,8 +32,6 @@ tv-train-flow = "Counterfactual_generation.train_ot_flow:main"
 tv-label      = "Counterfactual_generation.label_song_calls:main"
 tv-fad        = "Counterfactual_generation.run_fad2_all:main"
 
-[project.urls]
-Repository = "https://github.com/hwiora/trajectory_variance"
 
 [tool.setuptools.packages.find]
 where = ["."]

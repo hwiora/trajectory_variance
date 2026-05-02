@@ -29,7 +29,7 @@ Usage:
   python run_evaluations.py --skip_hard_ot   # skip per-age OT (slow)
 
 Output:
-  models/evaluation_results.json             # complete JSON
+  models/paper_eval_results.json             # complete JSON
   Console: LaTeX-ready table rows for copy-paste into paper
 """
 
@@ -71,39 +71,31 @@ from .analyze_plasticity import (
 BIRDS = ["R4634", "R4951", "R5018"]
 BIRD_LABELS = {"R4634": "A", "R4951": "B", "R5018": "C"}
 
-# Feb 24 models: OT (Hungarian) coupling during training
+_MODELS = Path(__file__).parent / "models"
+
 FLOW_DIRS_OT = {
-    "R4634": "models/ot_flow_R4634_20260224_162317",
-    "R4951": "models/ot_flow_R4951_20260224_151200",
-    "R5018": "models/ot_flow_R5018_20260224_124555",
+    "R4634": _MODELS / "ot_flow_R4634_ot",
+    "R4951": _MODELS / "ot_flow_R4951_ot",
+    "R5018": _MODELS / "ot_flow_R5018_ot",
 }
 
-# Feb 26 models: kNN coupling during training (k=10, min_age_gap=1)
 FLOW_DIRS_KNN = {
-    "R4634": "models/ot_flow_R4634_20260226_104203",
-    "R4951": "models/ot_flow_R4951_20260226_103957",
-    "R5018": "models/ot_flow_R5018_20260226_104348",
+    "R4634": _MODELS / "ot_flow_R4634_knn",
+    "R4951": _MODELS / "ot_flow_R4951_knn",
+    "R5018": _MODELS / "ot_flow_R5018_knn",
 }
 
 # Default to OT models (backward compat); --coupling flag selects
 FLOW_DIRS = FLOW_DIRS_OT
 
-ACOUSTIC_FEATURES = [
-    "spectral_flatness", "spectral_entropy", "spectral_centroid",
-    "bandwidth", "temporal_entropy", "mean_energy",
-]
+ACOUSTIC_FEATURES = ["spectral_flatness"]
 
 # Display names for LaTeX
 FEATURE_DISPLAY = {
     "spectral_flatness": "Spectral flatness",
-    "spectral_entropy":  "Spectral entropy",
-    "spectral_centroid": "Centroid",
-    "bandwidth":         "Bandwidth",
-    "temporal_entropy":  "Temporal entropy",
-    "mean_energy":       "Mean energy",
 }
 
-OUTPUT_DIR = Path("models")
+OUTPUT_DIR = Path(__file__).parent / "models"
 
 
 # ═════════════════════════════════════════════════════════════════
@@ -111,33 +103,27 @@ OUTPUT_DIR = Path("models")
 # ═════════════════════════════════════════════════════════════════
 
 def load_or_compute_acoustic_features(bird: str, N: int) -> dict[str, np.ndarray]:
-    """Load cached acoustic features or compute from spectrograms.
+    """Load cached spectral flatness or compute from spectrograms.
 
-    Returns dict mapping feature_name -> (N,) numpy array.
-    Caches to models/acoustic_features_{bird}.npz.
+    Returns dict with key 'spectral_flatness' -> (N_lat,) numpy array.
+    NaN entries indicate segments without a corresponding spectrogram in
+    the preprocessing snapshot used to compute these features.
     """
-    cache_path = OUTPUT_DIR / f"acoustic_features_{bird}.npz"
+    cache_path = OUTPUT_DIR / f"spectral_flatness_{bird}.npz"
     if cache_path.exists():
-        print(f"  Loading cached acoustic features: {cache_path}")
+        print(f"  Loading cached spectral flatness: {cache_path}")
         data = np.load(cache_path)
-        features = {k: data[k] for k in data.files}
-        if len(features.get("duration", [])) == N:
-            return features
-        print(f"  Cache size mismatch ({len(features.get('duration', []))} vs {N}), "
-              f"recomputing...")
+        return {"spectral_flatness": data["spectral_flatness"]}
 
     print(f"  Computing acoustic features from spectrograms (streaming)...")
     t0 = time.time()
-    features = compute_acoustic_features_streaming(bird, N)
+    full = compute_acoustic_features_streaming(bird, N)
     dt = time.time() - t0
-    actual_N = len(features['duration'])
-    if actual_N != N:
-        print(f"  NOTE: Got {actual_N} acoustic features for {N} latents. "
-              f"Evaluation will use first {actual_N} samples.")
+    sf = np.full(N, np.nan, dtype=np.float64)
+    sf[:len(full['spectral_flatness'])] = full['spectral_flatness']
     print(f"  Done in {dt:.1f}s.  Caching to {cache_path}")
-
-    np.savez(cache_path, **features)
-    return features
+    np.savez(cache_path, spectral_flatness=sf)
+    return {"spectral_flatness": sf}
 
 
 # ═════════════════════════════════════════════════════════════════
@@ -210,7 +196,8 @@ def evaluate_bird(bird: str, n_eval: int = 10_000,
 
     # ── Load data ──
     print("\n  Loading data...")
-    data = load_data(flow_dir, bird, device)
+    data = load_data(flow_dir, bird, device,
+                     labels_dir=Path(__file__).parent.parent / "gold_standard_labels")
     data['flow_dir'] = flow_dir
     N = len(data['latents_norm'])
 
@@ -219,7 +206,8 @@ def evaluate_bird(bird: str, n_eval: int = 10_000,
 
     # ── Load/compute acoustic features ──
     features = load_or_compute_acoustic_features(bird, N)
-    N_feat = len(features['duration'])
+    # NaN entries mark segments outside the feature-computation snapshot.
+    N_feat = int(np.sum(~np.isnan(features['spectral_flatness'])))
 
     # ── Draw reproducible eval subset ──
     # Restrict to indices that have both latents and acoustic features
@@ -234,7 +222,6 @@ def evaluate_bird(bird: str, n_eval: int = 10_000,
 
     # Acoustic features for the eval subset
     sub_features = {f: features[f][sub_idx] for f in ACOUSTIC_FEATURES}
-    sub_dur_feats = features['duration'][sub_idx]
 
     target_ages = make_target_ages(data['age_min'], data['age_max'],
                                    num_target_ages)
@@ -573,7 +560,7 @@ def main():
     parser.add_argument("--quick", action="store_true",
                         help="Quick mode: n_eval=2000, skip per-age OT")
     parser.add_argument("--output", type=str,
-                        default="models/evaluation_results.json",
+                        default="models/paper_eval_results.json",
                         help="Output JSON path")
     args = parser.parse_args()
 

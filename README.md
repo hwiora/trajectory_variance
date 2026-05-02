@@ -1,4 +1,4 @@
-# Trajectory Variance: An Unsupervised Measure of Developmental Vocal Plasticity
+# Trajectory Variance: An Unsupervised Measure of Developmental Vocal Plasticity in Birdsong
 
 Code accompanying the Interspeech 2026 paper.
 
@@ -27,15 +27,20 @@ trajectory_variance/
     ├── label_song_calls.py              # Bout-based song/call labeling
     ├── baseline_comparison.py           # All baseline transports + variance computation
     ├── analyze_plasticity.py            # Acoustic-feature streaming
-    ├── run_evaluations.py               # → models/evaluation_results.json (Tables 1+2)
+    ├── run_evaluations.py               # → models/paper_eval_results.json (Tables 1+2)
     ├── compute_fad2.py, run_fad2_all.py # FAD evaluation (Discussion)
     ├── utils.py                         # DATA_ROOT, helpers
     └── models/
         ├── flow.py                      # Displacement-model architecture & loader
-        ├── evaluation_results.json      # Reference output for Tables 1+2
+        ├── paper_eval_results.json      # Reference output for Tables 1+2
         ├── fad2_summary.json            # Reference output for FAD numbers
-        └── fig1_data_R{4634,4951,5018}.npz  # Pre-computed per-vocalization variances + labels
+        ├── fig1_data_R{4634,4951,5018}.npz  # Pre-computed per-vocalization variances + labels
+        ├── spectral_flatness_R{4634,4951,5018}.npz  # Cached spectral flatness per vocalization
+        ├── vae_R{4634,4951,5018}/       # Trained VAE checkpoints (best.pt + config.json)
+        └── ot_flow_R{4634,4951,5018}_{ot,knn}/  # Trained displacement-model checkpoints
 ```
+
+`vae_*/latents.pt` (~95–142 MB per bird) is not included in the GitHub repo due to size; download from the accompanying data archive (link in the data section below) and place each `latents.pt` next to its corresponding `best.pt` to skip re-encoding.
 
 ## Setup
 
@@ -46,7 +51,7 @@ trajectory_variance/
 > Note: `environment.yml` was exported on Windows. On macOS/Linux use `pip install -e .` instead.
 
 ```bash
-git clone https://github.com/hwiora/trajectory_variance
+git clone <repository-url>
 cd trajectory_variance
 conda env create -f environment.yml        # creates the 'preprocess' environment
 conda activate preprocess
@@ -70,9 +75,29 @@ See the [Data section](#data) below for the expected directory layout.
 
 ## Data
 
-The raw H5 files are not included here — they come from a pre-existing data pipeline and are large (~3.5–4 GB per bird). The paper uses three zebra finch datasets (R4634, R4951, R5018; recorded 40–100 dph; 183K–274K vocalizations each). Please contact the author for access if you want to reproduce end-to-end.
+The paper uses three zebra finch datasets (R4634 / R4951 / R5018; recorded 40–100 dph; 183K–274K vocalizations each). What's available where:
 
-The expected layout under `DATA_ROOT` (used by the default `--source h5` flag) is:
+| Item | Location | Notes |
+|------|----------|-------|
+| Trained model weights (VAE + displacement) | this repo, under `Counterfactual_generation/models/` | `best.pt` + `config.json` per bird |
+| Cached spectral flatness | this repo, `models/spectral_flatness_<bird>.npz` | One feature per vocalization, NaN-padded; see note in §"Reproducing the paper" |
+| Song/call gold-standard labels | this repo, `gold_standard_labels/` | Bout-based heuristic |
+| Per-vocalization VAE latents (`latents.pt`) | Zenodo (anonymous link below) | ~95–142 MB per bird; over GitHub's file-size limit |
+| Raw H5 spectrograms | not publicly released | Schema documented below for users training from their own data |
+| Raw audio (WAV/FLAC) | not yet released | Will accompany the camera-ready release |
+
+**Anonymous Zenodo deposit (latents):** https://zenodo.org/records/19922014?preview=1&token=eyJhbGciOiJIUzUxMiJ9.eyJpZCI6IjZlYzYzMjNkLTJmZDQtNDFiYy05MDJkLTFiODBkMzJjNTk2YyIsImRhdGEiOnt9LCJyYW5kb20iOiIwNjkwNTdkNTU4YjQyMTNmNjNhYTExMDIyNDFmYjVjMyJ9.xtASLFgKdxTS8DkcVPBBLFcuuC26kGnbFmng6yKp0ilm1OksBHZugqZXqjJ8ccQ28ZXUDu-FP2HdKooKgcOXNg
+
+After downloading, place each `latents.pt` next to its corresponding `best.pt`:
+
+```
+Counterfactual_generation/models/vae_<bird>/
+├── best.pt        # in this repo
+├── config.json    # in this repo
+└── latents.pt     # downloaded from Zenodo
+```
+
+If you supply your own H5 files (matching the schema below), the training scripts will encode latents from scratch — you do not need to download `latents.pt`. The expected layout is:
 
 ```
 DATA_ROOT/
@@ -80,6 +105,33 @@ DATA_ROOT/
     └── Processed/
         └── <bird_id>.h5
 ```
+
+set via `TRAJECTORY_VARIANCE_DATA_ROOT` (see Setup).
+
+## H5 file format (for users training from their own data)
+
+The `train_ae.py` and `train_ot_flow.py` scripts read from per-bird HDF5 files at `DATA_ROOT/<bird>/Processed/<bird>.h5`. The expected schema:
+
+### `/spectrograms`
+- `/spectrograms/<file_id>` — `(123, N_frames)` int8. Linear-frequency spectrogram of a full recording session: 123 frequency bins (312–8000 Hz), 250 fps (sr=32000, hop=128), int8 quantized.
+- `/spectrograms/file_id` — `(N_files,)` int32. Maps spectrogram dataset keys to file IDs.
+
+### `/segments`
+- `/segments/segment_id` — `(N,)` int32. Unique vocalization identifier.
+- `/segments/file_id` — `(N,)` int32. Links to `/files`.
+- `/segments/onset_sec` — `(N,)` float32. Onset within the recording file.
+- `/segments/duration_sec` — `(N,)` float32. Vocalization duration.
+
+Arrays are in H5 storage order; the training code re-sorts to pipeline order (sorted by day-post-hatch then filename then onset).
+
+### `/files`
+- `/files/file_id` — `(N_files,)` int32.
+- `/files/filename` — `(N_files,)` bytes. Format `<bird_id>_<datenum>.<ms_since_midnight>_<month>_<day>_<hour>_<minute>_<second>.wav`. The training code subtracts `parameters/hatch_datenum` from `<datenum>` and rounds to the nearest integer to obtain days post-hatch.
+
+### `/parameters` (HDF5 group with attributes only)
+- `audio_sr` (32000), `hop_length` (128), `spec_n_fft` (512), `spec_min_freq` (312), `spec_max_freq` (8000)
+- `hatch_datenum` (per-bird Excel/OLE serial date number of the hatch date)
+- `spec_global_min`, `spec_global_max` (per-bird floats; pre-quantization range, useful for recovering normalized values)
 
 ## Reproducing the paper
 
@@ -124,7 +176,9 @@ python -m Counterfactual_generation.run_evaluations
 # or: tv-evaluate
 ```
 
-Output: `Counterfactual_generation/models/evaluation_results.json`. A **reference copy is committed** to this repo — diff your re-run against it to verify you reproduced the exact paper numbers.
+Output: `Counterfactual_generation/models/paper_eval_results.json`. A **reference copy is committed** to this repo — diff your re-run against it to verify you reproduced the exact paper numbers.
+
+**Note on the spectral flatness cache:** A small fraction of segments (~0.4% across all birds) carry NaN values because they were added to the dataset after the spectrogram preprocessing snapshot used to compute these features was generated. The evaluation code excludes these from the analysis.
 
 ### Figures
 
@@ -144,9 +198,9 @@ Reproduces `Counterfactual_generation/models/fad2_summary.json` (the 0.01–0.06
 ## Citation
 
 ```bibtex
-@unpublished{lee2026trajectory,
-  title  = {Trajectory Variance: An Unsupervised Measure of Developmental Vocal Plasticity},
-  author = {Lee, Kanghwi},
+@unpublished{anonymous2026trajectory,
+  title  = {Trajectory Variance: An Unsupervised Measure of Developmental Vocal Plasticity in Birdsong},
+  author = {Anonymous},
   year   = {2026},
   note   = {Under review at Interspeech 2026}
 }
@@ -155,7 +209,3 @@ Reproduces `Counterfactual_generation/models/fad2_summary.json` (the 0.01–0.06
 ## License
 
 MIT — see [LICENSE](LICENSE).
-
-## Author
-
-Kanghwi Lee — kanlee@ini.ethz.ch

@@ -44,12 +44,6 @@ import h5py
 
 from .utils import DATA_ROOT
 
-BIRD_CONFIG = {
-    "R2915": {"hatch_datenum": 40674},
-    "R4634": {"hatch_datenum": 41839},
-    "R4951": {"hatch_datenum": 42086},
-    "R5018": {"hatch_datenum": 42142},
-}
 
 
 # ============================== Data Loading ==============================
@@ -79,10 +73,10 @@ def load_spectrograms_h5(bird, n_time=100):
         h5_idx:     (N_segments,) long tensor (H5 row index in pipeline order)
         segment_id: (N_segments,) long tensor (segment IDs in pipeline order)
     """
-    hatch = BIRD_CONFIG[bird]["hatch_datenum"]
     h5_path = DATA_ROOT / bird / "Processed" / f"{bird}.h5"
 
     with h5py.File(h5_path, "r") as h5:
+        hatch = int(h5["parameters"].attrs["hatch_datenum"])
         n_segs = len(h5["segments/segment_id"][:])
         segment_ids = h5["segments/segment_id"][:]
         onset_sec = h5["segments/onset_sec"][:]
