@@ -219,7 +219,7 @@ Outputs `Counterfactual_generation/models/fad2_summary_check.json` with the reco
 
 ## Acknowledgments
 
-The zebra finch recordings were provided by Dina Lipkind. This work was funded by the Swiss National Science Foundation (Projects 31003A_182638 and 205320_215494/1).
+The zebra finch recordings were provided by Dina Lipkind and will be released in a future work. This work was funded by the Swiss National Science Foundation (Projects 31003A_182638 and 205320_215494/1).
 
 ## License
 
