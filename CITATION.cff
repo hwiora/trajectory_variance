@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the accompanying paper."
+title: "Trajectory Variance: An Unsupervised Measure of Developmental Vocal Plasticity in Birdsong"
+authors:
+  - family-names: Lee
+    given-names: Kanghwi
+    orcid: "https://orcid.org/0009-0001-0691-6664"
+    affiliation: "Institute of Neuroinformatics, University of Zurich and ETH Zurich"
+repository-code: "https://github.com/hwiora/trajectory_variance"
+license: MIT
+preferred-citation:
+  type: conference-paper
+  title: "Trajectory Variance: An Unsupervised Measure of Developmental Vocal Plasticity in Birdsong"
+  authors:
+    - family-names: Lee
+      given-names: Kanghwi
+      orcid: "https://orcid.org/0009-0001-0691-6664"
+  collection-title: "Proc. Interspeech 2026"
+  year: 2026

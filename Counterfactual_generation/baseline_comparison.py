@@ -935,7 +935,7 @@ def run_comparison(data, n_eval=10000, num_target_ages=7, k=5, quick=False,
 
         # Save exact arrays for Figure 1 plotting if it's the Neural model
         if name == 'Neural':
-            out_npz = Path(data['flow_dir']) / "fig1_data.npz"
+            out_npz = Path(data['flow_dir']) / "fig2_data.npz"
             np.savez(out_npz,
                      variances=m['variance'],
                      path_length=m['path_length'],

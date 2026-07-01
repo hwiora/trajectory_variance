@@ -37,7 +37,7 @@ trajectory_variance/
         ├── flow.py                      # Displacement-model architecture & loader
         ├── paper_eval_results.json      # Reference output for Tables 1+2
         ├── fad2_summary.json            # Reference output for FAD numbers
-        ├── fig1_data_R{4634,4951,5018}.npz  # Pre-computed per-vocalization variances + labels
+        ├── fig2_data_R{4634,4951,5018}.npz  # Pre-computed per-vocalization variances + labels
         ├── spectral_flatness_R{4634,4951,5018}.npz  # Cached spectral flatness per vocalization
         ├── vae_R{4634,4951,5018}/       # Trained VAE checkpoints (best.pt + config.json)
         └── ot_flow_R{4634,4951,5018}_{ot,knn}/  # Trained displacement-model checkpoints
@@ -195,7 +195,7 @@ python -m Counterfactual_generation.plot_fig2 --output paper/figures/fig2.pdf
 # or: tv-plot-fig2 --output paper/figures/fig2.pdf
 ```
 
-Reads the pre-computed 10K-sample visualization data from `Counterfactual_generation/models/fig1_data_R{4634,4951,5018}.npz` (each containing `variances`, `is_song`, `durations`) for the KDE shape, and pulls the $d_r$ / AUC annotations from `paper_eval_results.json` (3K-sample evaluation, matching how Figure 2 is annotated in the paper).
+Reads the pre-computed 10K-sample visualization data from `Counterfactual_generation/models/fig2_data_R{4634,4951,5018}.npz` (each containing `variances`, `is_song`, `durations`) for the KDE shape, and pulls the $d_r$ / AUC annotations from `paper_eval_results.json` (3K-sample evaluation, matching how Figure 2 is annotated in the paper).
 
 **Figure 1** (pipeline schematic) is a hand-composed diagram included in the paper.
 

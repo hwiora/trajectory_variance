@@ -28,7 +28,7 @@ Thumbs.db
 *.mp3
 *.flac
 
-# Per-run fig1_data files are included in models/ (see models/fig1_data_R*.npz)
+# Per-run fig2_data files are included in models/ (see models/fig2_data_R*.npz)
 # Do NOT ignore *.npz globally; the committed reference npz files are needed for figures
 
 # Keep only the released spectral-flatness cache in version control

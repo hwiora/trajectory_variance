@@ -2,7 +2,7 @@
 for song vs call vocalizations, per bird.
 
 KDE shape uses the 10K-sample visualization subset stored in
-fig1_data_<bird>.npz; the d_r and AUC labels are pulled from the 3K-sample
+fig2_data_<bird>.npz; the d_r and AUC labels are pulled from the 3K-sample
 evaluation in paper_eval_results.json (Displacement / OT coupling), matching
 how Figure 2 is annotated in the paper.
 
@@ -44,7 +44,7 @@ def main():
     fig, axes = plt.subplots(1, 3, figsize=(13, 3.5), sharey=True)
 
     for ax, bird in zip(axes, BIRDS):
-        data = np.load(models_dir / f"fig1_data_{bird}.npz")
+        data = np.load(models_dir / f"fig2_data_{bird}.npz")
         var, is_song, dur = data["variances"], data["is_song"].astype(bool), data["durations"]
 
         resid = residualize(var, dur)
