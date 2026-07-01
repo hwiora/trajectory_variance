@@ -21,12 +21,14 @@ trajectory_variance/
 ├── .gitignore
 ├── paper/
 │   └── Trajectory_Variance_Interspeech2026.pdf
+├── gold_standard_labels/               # Bout-based song/call labels (per bird, pipeline order)
+│   └── R{4634,4951,5018}_song_labels_pipeline_order.npz
 └── Counterfactual_generation/           # Python package
     ├── train_ae.py                      # Spectrogram VAE
     ├── train_ot_flow.py                 # Displacement model (OT-coupled)
     ├── label_song_calls.py              # Bout-based song/call labeling
     ├── baseline_comparison.py           # All baseline transports + variance computation
-    ├── analyze_plasticity.py            # Spectral-flatness streaming
+    ├── analyze_plasticity.py            # Spectral flatness from H5 (segment-aligned)
     ├── run_evaluations.py               # → models/paper_eval_results.json (Tables 1+2)
     ├── plot_fig2.py                     # Reproduces Figure 2 (KDE panels)
     ├── compute_fad2.py, run_fad2_all.py # FAD evaluation (Discussion)
@@ -85,7 +87,7 @@ The paper uses three zebra finch datasets (R4634 / R4951 / R5018; recorded 40–
 | Song/call gold-standard labels | this repo, `gold_standard_labels/` | Bout-based heuristic |
 | Per-vocalization VAE latents (`latents.pt`) | from the author on request | ~95–142 MB per bird; over GitHub's file-size limit |
 | Raw H5 spectrograms | not publicly released | Schema documented below for users training from their own data |
-| Raw audio (WAV/FLAC) | not yet released | Will accompany the camera-ready release |
+| Raw audio (WAV/FLAC) | not yet released | Will accompany a future data release |
 
 **Latents (`latents.pt`):** available from the author on request. A citable archive will be published and this README updated with the DOI.
 
