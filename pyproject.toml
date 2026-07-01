@@ -8,7 +8,7 @@ version = "1.0.0"
 description = "Trajectory Variance: An Unsupervised Measure of Developmental Vocal Plasticity in Birdsong"
 readme = "README.md"
 license = { file = "LICENSE" }
-authors = [{ name = "Anonymous" }]
+authors = [{ name = "Kanghwi Lee", email = "kanlee@ini.ethz.ch" }]
 requires-python = ">=3.9"
 dependencies = [
     "torch>=2.0",
@@ -17,11 +17,9 @@ dependencies = [
     "scipy>=1.10",
     "scikit-learn>=1.2",
     "matplotlib>=3.6",
-    "seaborn>=0.12",
     "h5py>=3.8",
     "tqdm>=4.65",
     "librosa>=0.10",
-    "diptest>=0.5",
     "geomloss>=0.2",
 ]
 

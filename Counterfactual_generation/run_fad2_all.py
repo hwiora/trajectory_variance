@@ -4,11 +4,11 @@ Run pooled FAD2 for all birds/methods and aggregate results.
 This wrapper executes compute_fad2.py for each selected (bird, method), then
 collects per-run JSON outputs into one summary JSON + CSV.
 
-Default methods: ot_flow, latent_cfm
+Default method:  ot_flow
 Default birds:   R4634, R4951, R5018
 
 Example:
-  python run_fad2_all.py --total_samples 2000
+  python -m Counterfactual_generation.run_fad2_all --total_samples 2000
 """
 
 from __future__ import annotations
@@ -24,24 +24,19 @@ from pathlib import Path
 SCRIPT_DIR = Path(__file__).resolve().parent
 
 BIRDS = ["R4634", "R4951", "R5018"]
-METHODS = ["ot_flow", "latent_cfm"]
+METHODS = ["ot_flow"]
 
 AE_DIRS = {
-    "R4634": SCRIPT_DIR / "models" / "vae_R4634_20260224_024051",
-    "R4951": SCRIPT_DIR / "models" / "vae_R4951_20260224_035117",
-    "R5018": SCRIPT_DIR / "models" / "vae_R5018_20260224_040422",
+    "R4634": SCRIPT_DIR / "models" / "vae_R4634",
+    "R4951": SCRIPT_DIR / "models" / "vae_R4951",
+    "R5018": SCRIPT_DIR / "models" / "vae_R5018",
 }
 
 FLOW_DIRS = {
     "ot_flow": {
-        "R4634": SCRIPT_DIR / "models" / "ot_flow_R4634_20260224_162317",
-        "R4951": SCRIPT_DIR / "models" / "ot_flow_R4951_20260224_151200",
-        "R5018": SCRIPT_DIR / "models" / "ot_flow_R5018_20260224_124555",
-    },
-    "latent_cfm": {
-        "R4634": SCRIPT_DIR / "models" / "lcfm_R4634_20260305_043213",
-        "R4951": SCRIPT_DIR / "models" / "lcfm_R4951_20260305_045209",
-        "R5018": SCRIPT_DIR / "models" / "lcfm_R5018_20260305_022721",
+        "R4634": SCRIPT_DIR / "models" / "ot_flow_R4634_ot",
+        "R4951": SCRIPT_DIR / "models" / "ot_flow_R4951_ot",
+        "R5018": SCRIPT_DIR / "models" / "ot_flow_R5018_ot",
     },
 }
 
@@ -52,7 +47,8 @@ def run_one(method: str, bird: str, total_samples: int, seed: int, n_points: int
 
     cmd = [
         sys.executable,
-        str(SCRIPT_DIR / "compute_fad2.py"),
+        "-m",
+        "Counterfactual_generation.compute_fad2",
         "--method", method,
         "--ae_dir", str(ae_dir),
         "--flow_dir", str(flow_dir),
@@ -85,9 +81,19 @@ def main():
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--n_points", type=int, default=10)
     parser.add_argument("--n_repeats", type=int, default=5)
-    parser.add_argument("--out_json", type=str, default="models/fad2_summary.json")
-    parser.add_argument("--out_csv", type=str, default="models/fad2_summary.csv")
+    parser.add_argument("--out_json", type=str, default="models/fad2_summary_check.json")
+    parser.add_argument("--out_csv", type=str, default="models/fad2_summary_check.csv")
     args = parser.parse_args()
+
+    repo_root = SCRIPT_DIR.parent
+
+    def _rel(p):
+        if not p:
+            return p
+        try:
+            return str(Path(p).resolve().relative_to(repo_root.resolve())).replace("\\", "/")
+        except ValueError:
+            return str(p)
 
     rows = []
     failures = []
@@ -107,8 +113,8 @@ def main():
                     "baseline_full_fad": r.get("baseline_full_fad"),
                     "n_real": r.get("n_real"),
                     "n_cf": r.get("n_cf"),
-                    "flow_dir": r.get("flow_dir"),
-                    "ae_dir": r.get("ae_dir"),
+                    "flow_dir": _rel(r.get("flow_dir")),
+                    "ae_dir": _rel(r.get("ae_dir")),
                 })
             except Exception as exc:
                 failures.append({"method": method, "bird": bird, "error": str(exc)})

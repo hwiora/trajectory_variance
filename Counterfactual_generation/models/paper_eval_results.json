@@ -4,126 +4,126 @@
     "label": "A",
     "coupling": "ot",
     "N": 222165,
-    "n_eval": 2985,
-    "flow_dir": "C:\\Kenny\\1.Work\\v2\\antigravity\\Counterfactual_generation\\trajectory-variance\\Counterfactual_generation\\models\\ot_flow_R4634_ot",
+    "n_eval": 3000,
+    "flow_dir": "Counterfactual_generation/models/ot_flow_R4634_ot",
     "table2": {
       "Displacement": {
         "feature_correlations": {
           "spectral_flatness": {
-            "r": -0.03116200104917776,
-            "p": 0.08871020082347672
+            "r": -0.47386290087603594,
+            "p": 8.546741642478826e-168
           }
         },
-        "cohens_d_resid": 0.5688163699425113,
-        "auc_resid": 0.6658677811749313,
-        "r2_duration": 0.49003848272247896,
-        "time_sec": 0.35558485984802246,
-        "n_eval": 2985
+        "cohens_d_resid": 0.5696759417101018,
+        "auc_resid": 0.6662577042767138,
+        "r2_duration": 0.4904018525831728,
+        "time_sec": 0.4363126754760742,
+        "n_eval": 3000
       },
       "Gaussian OT": {
         "feature_correlations": {
           "spectral_flatness": {
-            "r": -0.04167891111918545,
-            "p": 0.02277611078579549
+            "r": -0.43907799724750607,
+            "p": 1.2404211560481628e-141
           }
         },
-        "cohens_d_resid": 0.06485955280433625,
-        "auc_resid": 0.5241268458791117,
-        "r2_duration": 0.3517874882314991,
-        "time_sec": 3.3142173290252686,
-        "n_eval": 2985
+        "cohens_d_resid": 0.06167427973907971,
+        "auc_resid": 0.5235239997621188,
+        "r2_duration": 0.3522452143649838,
+        "time_sec": 3.8704211711883545,
+        "n_eval": 3000
       },
       "kNN(k=10)": {
         "feature_correlations": {
           "spectral_flatness": {
-            "r": 0.0006128875928929285,
-            "p": 0.9732988432830711
+            "r": -0.43357213873500833,
+            "p": 9.17229577672273e-138
           }
         },
-        "cohens_d_resid": -0.04587568928630882,
-        "auc_resid": 0.4982515244348074,
-        "r2_duration": 0.24850893987539524,
-        "time_sec": 0.29505443572998047,
-        "n_eval": 2985
+        "cohens_d_resid": -0.04315034593511339,
+        "auc_resid": 0.4990362314024145,
+        "r2_duration": 0.24899576943567736,
+        "time_sec": 0.4131591320037842,
+        "n_eval": 3000
       },
       "Per-age OT": {
         "feature_correlations": {
           "spectral_flatness": {
-            "r": -0.0029219111462809575,
-            "p": 0.8732178106895175
+            "r": -0.4400173160214141,
+            "p": 2.668968552498871e-142
           }
         },
-        "cohens_d_resid": -0.18506830200769325,
-        "auc_resid": 0.45208803970133277,
-        "r2_duration": 0.3249961958497929,
-        "time_sec": 1.0470843315124512,
-        "n_eval": 2985
+        "cohens_d_resid": -0.18726519783164036,
+        "auc_resid": 0.4517298609344632,
+        "r2_duration": 0.3242817136019398,
+        "time_sec": 1.5265710353851318,
+        "n_eval": 3000
       }
     },
-    "time_total_sec": 5.400081634521484
+    "time_total_sec": 6.993241310119629
   },
   "R4951_ot": {
     "bird": "R4951",
     "label": "B",
     "coupling": "ot",
     "N": 274014,
-    "n_eval": 2983,
-    "flow_dir": "C:\\Kenny\\1.Work\\v2\\antigravity\\Counterfactual_generation\\trajectory-variance\\Counterfactual_generation\\models\\ot_flow_R4951_ot",
+    "n_eval": 3000,
+    "flow_dir": "Counterfactual_generation/models/ot_flow_R4951_ot",
     "table2": {
       "Displacement": {
         "feature_correlations": {
           "spectral_flatness": {
-            "r": -0.03257625445042333,
-            "p": 0.07524980878071157
+            "r": -0.7502467957159797,
+            "p": 0.0
           }
         },
-        "cohens_d_resid": 0.3231679196982308,
-        "auc_resid": 0.6527370465280153,
-        "r2_duration": 0.4961142585729813,
-        "time_sec": 0.19068598747253418,
-        "n_eval": 2983
+        "cohens_d_resid": 0.32135183626186725,
+        "auc_resid": 0.6516243634638662,
+        "r2_duration": 0.4954380327189738,
+        "time_sec": 0.24857497215270996,
+        "n_eval": 3000
       },
       "Gaussian OT": {
         "feature_correlations": {
           "spectral_flatness": {
-            "r": 0.04927224216229144,
-            "p": 0.0071109863775196
+            "r": -0.44574650952614947,
+            "p": 2.0459806114384424e-146
           }
         },
-        "cohens_d_resid": -0.16202909750509312,
-        "auc_resid": 0.440543278549413,
-        "r2_duration": 0.3414632421707291,
-        "time_sec": 3.387277841567993,
-        "n_eval": 2983
+        "cohens_d_resid": -0.16465762808358692,
+        "auc_resid": 0.43927581675896654,
+        "r2_duration": 0.3406721132377376,
+        "time_sec": 4.153800964355469,
+        "n_eval": 3000
       },
       "kNN(k=10)": {
         "feature_correlations": {
           "spectral_flatness": {
-            "r": -0.06913521733643875,
-            "p": 0.0001575309333395738
+            "r": -0.5283368210377747,
+            "p": 2.2852212369490918e-215
           }
         },
-        "cohens_d_resid": -0.07031814778566789,
-        "auc_resid": 0.4910170071269563,
-        "r2_duration": 0.27869765614191244,
-        "time_sec": 0.3298313617706299,
-        "n_eval": 2983
+        "cohens_d_resid": -0.07306090302951473,
+        "auc_resid": 0.49034573378618673,
+        "r2_duration": 0.27912872051097626,
+        "time_sec": 0.428494930267334,
+        "n_eval": 3000
       },
       "Per-age OT": {
         "feature_correlations": {
           "spectral_flatness": {
-            "r": 0.0434929332286738,
-            "p": 0.017521613623182258
+            "r": -0.4427026891850247,
+            "p": 3.2151653135975067e-144
           }
         },
-        "cohens_d_resid": -0.40644240355653516,
-        "auc_resid": 0.39197792194926834,
-        "r2_duration": 0.2992450888203526,
-        "time_sec": 1.1339921951293945,
-        "n_eval": 2983
+        "cohens_d_resid": -0.4076750424053478,
+        "auc_resid": 0.3914219849663273,
+        "r2_duration": 0.2982051067480337,
+        "time_sec": 1.6158969402313232,
+        "n_eval": 3000
       }
     },
-    "time_total_sec": 5.329834222793579
+    "time_total_sec": 6.940906047821045
   },
   "R5018_ot": {
     "bird": "R5018",
@@ -131,188 +131,188 @@
     "coupling": "ot",
     "N": 183264,
     "n_eval": 3000,
-    "flow_dir": "C:\\Kenny\\1.Work\\v2\\antigravity\\Counterfactual_generation\\trajectory-variance\\Counterfactual_generation\\models\\ot_flow_R5018_ot",
+    "flow_dir": "Counterfactual_generation/models/ot_flow_R5018_ot",
     "table2": {
       "Displacement": {
         "feature_correlations": {
           "spectral_flatness": {
-            "r": -0.5580606841596236,
-            "p": 3.155381206785169e-245
+            "r": -0.6000830953233249,
+            "p": 5.589287623136113e-293
           }
         },
         "cohens_d_resid": 0.2899873360975228,
         "auc_resid": 0.5836429889735459,
         "r2_duration": 0.6376412381897385,
-        "time_sec": 0.31334495544433594,
+        "time_sec": 0.32294273376464844,
         "n_eval": 3000
       },
       "Gaussian OT": {
         "feature_correlations": {
           "spectral_flatness": {
-            "r": -0.3142932700209118,
-            "p": 9.037646894243577e-70
+            "r": -0.3991382598362084,
+            "p": 3.8881651789397856e-115
           }
         },
         "cohens_d_resid": 0.06616553372858909,
         "auc_resid": 0.5156040887795182,
         "r2_duration": 0.46860881285657296,
-        "time_sec": 3.2433483600616455,
+        "time_sec": 3.8595407009124756,
         "n_eval": 3000
       },
       "kNN(k=10)": {
         "feature_correlations": {
           "spectral_flatness": {
-            "r": -0.4260697214919518,
-            "p": 1.3188683444448605e-132
+            "r": -0.578436443145077,
+            "p": 1.633405817439001e-267
           }
         },
         "cohens_d_resid": -0.025276946478524496,
         "auc_resid": 0.46201930812550285,
         "r2_duration": 0.171270987332945,
-        "time_sec": 0.22806811332702637,
+        "time_sec": 0.34386301040649414,
         "n_eval": 3000
       },
       "Per-age OT": {
         "feature_correlations": {
           "spectral_flatness": {
-            "r": -0.21260814204363263,
-            "p": 5.249166332227822e-32
+            "r": -0.3987662205675029,
+            "p": 6.606657012860384e-115
           }
         },
         "cohens_d_resid": -0.23646939852853452,
         "auc_resid": 0.42364204249680565,
         "r2_duration": 0.2839343278502503,
-        "time_sec": 0.9219181537628174,
+        "time_sec": 1.2647373676300049,
         "n_eval": 3000
       }
     },
-    "time_total_sec": 5.001215219497681
+    "time_total_sec": 6.182771444320679
   },
   "R4634_knn": {
     "bird": "R4634",
     "label": "A",
     "coupling": "knn",
     "N": 222165,
-    "n_eval": 2985,
-    "flow_dir": "C:\\Kenny\\1.Work\\v2\\antigravity\\Counterfactual_generation\\trajectory-variance\\Counterfactual_generation\\models\\ot_flow_R4634_knn",
+    "n_eval": 3000,
+    "flow_dir": "Counterfactual_generation/models/ot_flow_R4634_knn",
     "table2": {
       "Displacement": {
         "feature_correlations": {
           "spectral_flatness": {
-            "r": -0.028973316054316505,
-            "p": 0.11350564191019484
+            "r": -0.2485374102047711,
+            "p": 1.807185053182648e-43
           }
         },
-        "cohens_d_resid": 0.43096218927456004,
-        "auc_resid": 0.5972533459945343,
-        "r2_duration": 0.09607629956212149,
-        "time_sec": 0.4212489128112793,
-        "n_eval": 2985
+        "cohens_d_resid": 0.4334686878559772,
+        "auc_resid": 0.5983216383416483,
+        "r2_duration": 0.09607619903911002,
+        "time_sec": 0.24129486083984375,
+        "n_eval": 3000
       },
       "Gaussian OT": {
         "feature_correlations": {
           "spectral_flatness": {
-            "r": -0.04167891111918545,
-            "p": 0.02277611078579549
+            "r": -0.43907799724750607,
+            "p": 1.2404211560481628e-141
           }
         },
-        "cohens_d_resid": 0.06485955280433625,
-        "auc_resid": 0.5241268458791117,
-        "r2_duration": 0.3517874882314991,
-        "time_sec": 3.333852767944336,
-        "n_eval": 2985
+        "cohens_d_resid": 0.06167427973907971,
+        "auc_resid": 0.5235239997621188,
+        "r2_duration": 0.3522452143649838,
+        "time_sec": 3.803556203842163,
+        "n_eval": 3000
       },
       "kNN(k=10)": {
         "feature_correlations": {
           "spectral_flatness": {
-            "r": 0.0006128875928929285,
-            "p": 0.9732988432830711
+            "r": -0.43357213873500833,
+            "p": 9.17229577672273e-138
           }
         },
-        "cohens_d_resid": -0.04587568928630882,
-        "auc_resid": 0.4982515244348074,
-        "r2_duration": 0.24850893987539524,
-        "time_sec": 0.27895522117614746,
-        "n_eval": 2985
+        "cohens_d_resid": -0.04315034593511339,
+        "auc_resid": 0.4990362314024145,
+        "r2_duration": 0.24899576943567736,
+        "time_sec": 0.3246877193450928,
+        "n_eval": 3000
       },
       "Per-age OT": {
         "feature_correlations": {
           "spectral_flatness": {
-            "r": -0.0029219111462809575,
-            "p": 0.8732178106895175
+            "r": -0.4400173160214141,
+            "p": 2.668968552498871e-142
           }
         },
-        "cohens_d_resid": -0.18506830200769325,
-        "auc_resid": 0.45208803970133277,
-        "r2_duration": 0.3249961958497929,
-        "time_sec": 1.0441739559173584,
-        "n_eval": 2985
+        "cohens_d_resid": -0.18726519783164036,
+        "auc_resid": 0.4517298609344632,
+        "r2_duration": 0.3242817136019398,
+        "time_sec": 1.3694884777069092,
+        "n_eval": 3000
       }
     },
-    "time_total_sec": 5.417963743209839
+    "time_total_sec": 6.14548921585083
   },
   "R4951_knn": {
     "bird": "R4951",
     "label": "B",
     "coupling": "knn",
     "N": 274014,
-    "n_eval": 2983,
-    "flow_dir": "C:\\Kenny\\1.Work\\v2\\antigravity\\Counterfactual_generation\\trajectory-variance\\Counterfactual_generation\\models\\ot_flow_R4951_knn",
+    "n_eval": 3000,
+    "flow_dir": "Counterfactual_generation/models/ot_flow_R4951_knn",
     "table2": {
       "Displacement": {
         "feature_correlations": {
           "spectral_flatness": {
-            "r": -0.12588774093289015,
-            "p": 5.1938137525917845e-12
+            "r": -0.23835470589046256,
+            "p": 5.081927228685072e-40
           }
         },
-        "cohens_d_resid": 0.5083117942360568,
-        "auc_resid": 0.6492445949709446,
-        "r2_duration": 0.24440206326432812,
-        "time_sec": 0.4009392261505127,
-        "n_eval": 2983
+        "cohens_d_resid": 0.5122307045291672,
+        "auc_resid": 0.6508115575635796,
+        "r2_duration": 0.24483169147565875,
+        "time_sec": 0.3159627914428711,
+        "n_eval": 3000
       },
       "Gaussian OT": {
         "feature_correlations": {
           "spectral_flatness": {
-            "r": 0.04927224216229144,
-            "p": 0.0071109863775196
+            "r": -0.44574650952614947,
+            "p": 2.0459806114384424e-146
           }
         },
-        "cohens_d_resid": -0.16202909750509312,
-        "auc_resid": 0.440543278549413,
-        "r2_duration": 0.3414632421707291,
-        "time_sec": 3.2919139862060547,
-        "n_eval": 2983
+        "cohens_d_resid": -0.16465762808358692,
+        "auc_resid": 0.43927581675896654,
+        "r2_duration": 0.3406721132377376,
+        "time_sec": 3.6869287490844727,
+        "n_eval": 3000
       },
       "kNN(k=10)": {
         "feature_correlations": {
           "spectral_flatness": {
-            "r": -0.06913521733643875,
-            "p": 0.0001575309333395738
+            "r": -0.5283368210377747,
+            "p": 2.2852212369490918e-215
           }
         },
-        "cohens_d_resid": -0.07031814778566789,
-        "auc_resid": 0.4910170071269563,
-        "r2_duration": 0.27869765614191244,
-        "time_sec": 0.3240945339202881,
-        "n_eval": 2983
+        "cohens_d_resid": -0.07306090302951473,
+        "auc_resid": 0.49034573378618673,
+        "r2_duration": 0.27912872051097626,
+        "time_sec": 0.36116957664489746,
+        "n_eval": 3000
       },
       "Per-age OT": {
         "feature_correlations": {
           "spectral_flatness": {
-            "r": 0.0434929332286738,
-            "p": 0.017521613623182258
+            "r": -0.4427026891850247,
+            "p": 3.2151653135975067e-144
           }
         },
-        "cohens_d_resid": -0.40644240355653516,
-        "auc_resid": 0.39197792194926834,
-        "r2_duration": 0.2992450888203526,
-        "time_sec": 1.226181983947754,
-        "n_eval": 2983
+        "cohens_d_resid": -0.4076750424053478,
+        "auc_resid": 0.3914219849663273,
+        "r2_duration": 0.2982051067480337,
+        "time_sec": 1.729618787765503,
+        "n_eval": 3000
       }
     },
-    "time_total_sec": 5.6110451221466064
+    "time_total_sec": 6.507918357849121
   },
   "R5018_knn": {
     "bird": "R5018",
@@ -320,61 +320,61 @@
     "coupling": "knn",
     "N": 183264,
     "n_eval": 3000,
-    "flow_dir": "C:\\Kenny\\1.Work\\v2\\antigravity\\Counterfactual_generation\\trajectory-variance\\Counterfactual_generation\\models\\ot_flow_R5018_knn",
+    "flow_dir": "Counterfactual_generation/models/ot_flow_R5018_knn",
     "table2": {
       "Displacement": {
         "feature_correlations": {
           "spectral_flatness": {
-            "r": -0.5154090672689252,
-            "p": 2.7719112330809716e-203
+            "r": -0.5663278711156184,
+            "p": 4.409115230111369e-254
           }
         },
         "cohens_d_resid": -0.2953914651003677,
         "auc_resid": 0.406529743031565,
         "r2_duration": 0.2791995137195492,
-        "time_sec": 0.39431333541870117,
+        "time_sec": 0.322678804397583,
         "n_eval": 3000
       },
       "Gaussian OT": {
         "feature_correlations": {
           "spectral_flatness": {
-            "r": -0.3142932700209118,
-            "p": 9.037646894243577e-70
+            "r": -0.3991382598362084,
+            "p": 3.8881651789397856e-115
           }
         },
         "cohens_d_resid": 0.06616553372858909,
         "auc_resid": 0.5156040887795182,
         "r2_duration": 0.46860881285657296,
-        "time_sec": 3.216902732849121,
+        "time_sec": 3.5813558101654053,
         "n_eval": 3000
       },
       "kNN(k=10)": {
         "feature_correlations": {
           "spectral_flatness": {
-            "r": -0.4260697214919518,
-            "p": 1.3188683444448605e-132
+            "r": -0.578436443145077,
+            "p": 1.633405817439001e-267
           }
         },
         "cohens_d_resid": -0.025276946478524496,
         "auc_resid": 0.46201930812550285,
         "r2_duration": 0.171270987332945,
-        "time_sec": 0.2478044033050537,
+        "time_sec": 0.2532515525817871,
         "n_eval": 3000
       },
       "Per-age OT": {
         "feature_correlations": {
           "spectral_flatness": {
-            "r": -0.21260814204363263,
-            "p": 5.249166332227822e-32
+            "r": -0.3987662205675029,
+            "p": 6.606657012860384e-115
           }
         },
         "cohens_d_resid": -0.23646939852853452,
         "auc_resid": 0.42364204249680565,
         "r2_duration": 0.2839343278502503,
-        "time_sec": 1.0031228065490723,
+        "time_sec": 1.0980608463287354,
         "n_eval": 3000
       }
     },
-    "time_total_sec": 5.181666851043701
+    "time_total_sec": 5.642063856124878
   }
 }

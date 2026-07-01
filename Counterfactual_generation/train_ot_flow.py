@@ -14,8 +14,8 @@ Coupling strategies (--coupling):
         neighbors (cross-age). Purely local, never crosses type boundaries.
 
 Usage:
-    python Counterfactual_generation/train_ot_flow.py \
-        --ae_dir Counterfactual_generation/models/ae_R5018_20260211_161856 \
+    python -m Counterfactual_generation.train_ot_flow \
+        --ae_dir Counterfactual_generation/models/vae_R5018 \
         --arch direct --coupling knn --knn_k 10 --min_age_gap 5
 """
 
@@ -23,7 +23,6 @@ import argparse
 import json
 import random
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 from pathlib import Path
@@ -1404,7 +1403,8 @@ def analyze_only(args):
                           age_margin=age_margin)
 
 
-if __name__ == '__main__':
+def main():
+    """CLI entry point for training or analyzing an age-displacement model."""
     p = argparse.ArgumentParser(description='Data-to-Data Transport with k-NN Coupling')
     p.add_argument('--ae_dir', type=str, default=None)
     p.add_argument('--bird', type=str, default='R5018')
@@ -1514,3 +1514,7 @@ if __name__ == '__main__':
     else:
         assert args.ae_dir, "--ae_dir required for training"
         train(args)
+
+
+if __name__ == '__main__':
+    main()

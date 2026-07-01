@@ -15,7 +15,7 @@ env/
 .DS_Store
 Thumbs.db
 
-# Trained model weights — block by default, allow only the released checkpoints
+# Trained model weights: block by default, allow only the released checkpoints
 *.pt
 *.pth
 *.ckpt
@@ -29,12 +29,12 @@ Thumbs.db
 *.flac
 
 # Per-run fig1_data files are included in models/ (see models/fig1_data_R*.npz)
-# Do NOT ignore *.npz globally — the committed reference npz files are needed for figures
+# Do NOT ignore *.npz globally; the committed reference npz files are needed for figures
 
-# Block original 6-feature acoustic cache; allow only the released spectral-flatness cache
+# Keep only the released spectral-flatness cache in version control
 Counterfactual_generation/models/acoustic_features_R*.npz
 
-# Per-run model output dirs — block everything by default, then allow weights+config
+# Per-run model output dirs: block everything by default, then allow weights+config
 # for the released VAE and displacement-model checkpoints
 Counterfactual_generation/models/lcfm_*/
 Counterfactual_generation/models/fad_*/
@@ -43,7 +43,7 @@ Counterfactual_generation/models/cpa_*/
 Counterfactual_generation/models/cvae_*/
 Counterfactual_generation/models/condvae_*/
 
-# Internal/audit artifacts — never publish
+# Internal/audit artifacts: never publish
 check_alignment.py
 check_lengths.py
 check_fig2.py
@@ -56,6 +56,11 @@ audit_*.json
 audit_h5_only_cache/
 eval_zenodo_check.json
 fig2_check.png
+Counterfactual_generation/models/paper_eval_results_check*.json
+Counterfactual_generation/models/fad2_summary_check*.json
+Counterfactual_generation/models/fad2_summary_check*.csv
+Counterfactual_generation/models/fad2_summary.csv
+Counterfactual_generation/models/*/fad2_results.json
 
 # Generated figures and reports
 figures/

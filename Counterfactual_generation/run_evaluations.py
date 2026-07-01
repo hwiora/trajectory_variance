@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 """
-run_evaluations.py — Unified evaluation for Interspeech 2026.
+run_evaluations.py - Unified evaluation for the Interspeech 2026 paper.
 
-Computes ALL numbers for Tables 1 and 2 from one consistent model generation
-(Feb 2024 VAE + displacement models).
+Computes the reported Table 1 and Table 2 metrics from the released VAE
+latents, displacement-model checkpoints, song/call labels, and cached
+spectral-flatness vectors.
 
 For each bird (R4634 / R4951 / R5018):
 
-  Table 1 — Raw Pearson correlations with trajectory variance (displacement model):
-    6 acoustic features × 3 birds: r value and p-value
-    + R²(duration) for transparency
+  Table 1 - Raw Pearson correlations with trajectory variance:
+    spectral flatness per bird, plus R2(duration) for transparency
 
-  Table 2 — Baseline comparison (same eval subset, same target ages):
+  Table 2 - Baseline comparison (same eval subset, same target ages):
     |r|     : |Pearson corr(spectral flatness, V)| per method
     AUC     : song vs call AUC on duration-residualized variance
     d       : Cohen's d for song vs call on duration-residualized variance
@@ -23,10 +23,10 @@ Methods:
   4. Per-age OT   (Hungarian assignment per source-target age pair)
 
 Usage:
-  python run_evaluations.py                  # all 3 birds, full evaluation
-  python run_evaluations.py --bird R4634     # single bird
-  python run_evaluations.py --quick          # fast run (n_eval=2000)
-  python run_evaluations.py --skip_hard_ot   # skip per-age OT (slow)
+  python -m Counterfactual_generation.run_evaluations --coupling both --n_eval 3000
+  python -m Counterfactual_generation.run_evaluations --bird R4634
+  python -m Counterfactual_generation.run_evaluations --quick
+  python -m Counterfactual_generation.run_evaluations --skip_hard_ot
 
 Output:
   models/paper_eval_results.json             # complete JSON
@@ -37,7 +37,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import sys
 import time
 from pathlib import Path
 
@@ -47,7 +46,7 @@ from scipy import stats as scipy_stats
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score, roc_auc_score
 
-# ── Local imports (heavy computation lives in existing modules) ──
+# Local imports (heavy computation lives in existing modules)
 from .baseline_comparison import (
     load_data,
     make_target_ages,
@@ -64,9 +63,9 @@ from .analyze_plasticity import (
 )
 
 
-# ═════════════════════════════════════════════════════════════════
+# ---------------------------------------------------------------------------
 # Configuration
-# ═════════════════════════════════════════════════════════════════
+# ---------------------------------------------------------------------------
 
 BIRDS = ["R4634", "R4951", "R5018"]
 BIRD_LABELS = {"R4634": "A", "R4951": "B", "R5018": "C"}
@@ -98,16 +97,15 @@ FEATURE_DISPLAY = {
 OUTPUT_DIR = Path(__file__).parent / "models"
 
 
-# ═════════════════════════════════════════════════════════════════
+# ---------------------------------------------------------------------------
 # Acoustic feature loading (with caching)
-# ═════════════════════════════════════════════════════════════════
+# ---------------------------------------------------------------------------
 
 def load_or_compute_acoustic_features(bird: str, N: int) -> dict[str, np.ndarray]:
-    """Load cached spectral flatness or compute from spectrograms.
+    """Load the cached spectral flatness, or compute it from the H5 (segment-aligned).
 
-    Returns dict with key 'spectral_flatness' -> (N_lat,) numpy array.
-    NaN entries indicate segments without a corresponding spectrogram in
-    the preprocessing snapshot used to compute these features.
+    Returns ``{"spectral_flatness": (N,) array}`` aligned to latent order. Any NaN
+    entries mark segments whose recording lacks a stored spectrogram.
     """
     cache_path = OUTPUT_DIR / f"spectral_flatness_{bird}.npz"
     if cache_path.exists():
@@ -115,20 +113,17 @@ def load_or_compute_acoustic_features(bird: str, N: int) -> dict[str, np.ndarray
         data = np.load(cache_path)
         return {"spectral_flatness": data["spectral_flatness"]}
 
-    print(f"  Computing acoustic features from spectrograms (streaming)...")
+    print(f"  Computing spectral flatness from H5 (segment-aligned)...")
     t0 = time.time()
-    full = compute_acoustic_features_streaming(bird, N)
-    dt = time.time() - t0
-    sf = np.full(N, np.nan, dtype=np.float64)
-    sf[:len(full['spectral_flatness'])] = full['spectral_flatness']
-    print(f"  Done in {dt:.1f}s.  Caching to {cache_path}")
+    sf = compute_acoustic_features_streaming(bird, N)["spectral_flatness"]
+    print(f"  Done in {time.time() - t0:.1f}s.  Caching to {cache_path}")
     np.savez(cache_path, spectral_flatness=sf)
     return {"spectral_flatness": sf}
 
 
-# ═════════════════════════════════════════════════════════════════
+# ---------------------------------------------------------------------------
 # Evaluation metrics
-# ═════════════════════════════════════════════════════════════════
+# ---------------------------------------------------------------------------
 
 def pearson_corr(x: np.ndarray, y: np.ndarray):
     """Raw Pearson correlation. Returns (r, p)."""
@@ -160,15 +155,15 @@ def auc_residualized(values: np.ndarray, is_song: np.ndarray,
 
 
 def r2_duration(values: np.ndarray, durations: np.ndarray) -> float:
-    """R² of variance explained by duration alone."""
+    """R2 of variance explained by duration alone."""
     X = durations.reshape(-1, 1)
     reg = LinearRegression().fit(X, values)
     return float(r2_score(values, reg.predict(X)))
 
 
-# ═════════════════════════════════════════════════════════════════
+# ---------------------------------------------------------------------------
 # Core evaluation per bird
-# ═════════════════════════════════════════════════════════════════
+# ---------------------------------------------------------------------------
 
 def evaluate_bird(bird: str, n_eval: int = 10_000,
                   num_target_ages: int = 7, k: int = 10,
@@ -188,13 +183,13 @@ def evaluate_bird(bird: str, n_eval: int = 10_000,
     flow_dir = flow_dirs_map[bird]
 
     print(f"\n{'='*70}")
-    print(f"  EVALUATING {bird} (Bird {BIRD_LABELS[bird]}) — coupling={coupling}")
+    print(f"  EVALUATING {bird} (Bird {BIRD_LABELS[bird]}) - coupling={coupling}")
     print(f"{'='*70}")
     print(f"  Flow dir: {flow_dir}")
     print(f"  Device:   {device}")
     print(f"  n_eval:   {n_eval}")
 
-    # ── Load data ──
+    # Load data
     print("\n  Loading data...")
     data = load_data(flow_dir, bird, device,
                      labels_dir=Path(__file__).parent.parent / "gold_standard_labels")
@@ -204,12 +199,12 @@ def evaluate_bird(bird: str, n_eval: int = 10_000,
     print(f"  N = {N:,}  ({data['is_song'].sum():,} song, "
           f"{(~data['is_song']).sum():,} call)")
 
-    # ── Load/compute acoustic features ──
+    # Load/compute acoustic features
     features = load_or_compute_acoustic_features(bird, N)
     # NaN entries mark segments outside the feature-computation snapshot.
     N_feat = int(np.sum(~np.isnan(features['spectral_flatness'])))
 
-    # ── Draw reproducible eval subset ──
+    # Draw reproducible eval subset
     # Restrict to indices that have both latents and acoustic features
     sub_idx, sub_is_song, sub_dur = _draw_eval_subset(data, n_eval, seed=42)
     if N_feat < N:
@@ -226,7 +221,7 @@ def evaluate_bird(bird: str, n_eval: int = 10_000,
     target_ages = make_target_ages(data['age_min'], data['age_max'],
                                    num_target_ages)
 
-    # ── Compute trajectory variance for all methods ──
+    # Compute trajectory variance for all methods
     methods = {}
 
     # 1. Displacement (our model)
@@ -272,7 +267,7 @@ def evaluate_bird(bird: str, n_eval: int = 10_000,
     }
     print(f"    Done in {dt:.1f}s. Mean var = {m_knn['variance'].mean():.3f}")
 
-    # 4. Per-age OT (optional — slow)
+    # 4. Per-age OT (optional, slow)
     if not skip_hard_ot:
         sub_idx_ot, ot_cov = _strict_ot_subset(
             sub_idx, data['ages'], target_ages, seed=42)
@@ -292,14 +287,14 @@ def evaluate_bird(bird: str, n_eval: int = 10_000,
             }
             print(f"    Done in {dt:.1f}s. Mean var = {m_ot['variance'].mean():.3f}")
         else:
-            print("  [4/4] Per-age OT — skipped (empty strict subset)")
+            print("  [4/4] Per-age OT - skipped (empty strict subset)")
     else:
-        print("  [4/4] Per-age OT — skipped by --skip_hard_ot")
+        print("  [4/4] Per-age OT - skipped by --skip_hard_ot")
 
-    # ── Evaluate all methods ──
-    print(f"\n{'─'*70}")
+    # Evaluate all methods
+    print(f"\n{'-'*70}")
     print(f"  EVALUATION METRICS")
-    print(f"{'─'*70}")
+    print(f"{'-'*70}")
 
     results_by_method = {}
 
@@ -319,7 +314,7 @@ def evaluate_bird(bird: str, n_eval: int = 10_000,
             m_sub_idx = sub_idx
             m_features = sub_features
 
-        # Raw Pearson correlations with all 6 acoustic features
+        # Raw Pearson correlations with cached spectral flatness
         feature_correlations = {}
         for fname in ACOUSTIC_FEATURES:
             r_val, p_val = pearson_corr(var, m_features[fname])
@@ -331,7 +326,7 @@ def evaluate_bird(bird: str, n_eval: int = 10_000,
         # AUC (song vs call, duration-residualized)
         auc_res = auc_residualized(var, m_is_song, m_dur.astype(float))
 
-        # R²(duration) — for transparency
+        # R2(duration) for transparency
         r2_d = r2_duration(var, m_dur.astype(float))
 
         results_by_method[method_name] = {
@@ -345,38 +340,43 @@ def evaluate_bird(bird: str, n_eval: int = 10_000,
 
         # Print summary
         print(f"\n  {method_name}:")
-        print(f"    R²(duration)  = {r2_d:.3f}")
+        print(f"    R2(duration)  = {r2_d:.3f}")
         for fname in ACOUSTIC_FEATURES:
             fc = feature_correlations[fname]
             print(f"    r({fname:20s}) = {fc['r']:+.3f}  (p={fc['p']:.2e})")
         print(f"    Cohen's d_res  = {d_resid:+.3f}")
         print(f"    AUC_res        = {auc_res:.3f}")
 
-    # ── Compile bird results ──
+    repo_root = Path(__file__).parent.parent
+    try:
+        flow_dir_str = str(Path(flow_dir).resolve().relative_to(repo_root.resolve())).replace("\\", "/")
+    except ValueError:
+        flow_dir_str = str(flow_dir)
+
     bird_results = {
         'bird': bird,
         'label': BIRD_LABELS[bird],
         'coupling': coupling,
         'N': N,
         'n_eval': N_eval,
-        'flow_dir': flow_dir,
+        'flow_dir': flow_dir_str,
         'table2': results_by_method,
     }
     return bird_results
 
 
-# ═════════════════════════════════════════════════════════════════
+# ---------------------------------------------------------------------------
 # LaTeX table formatting
-# ═════════════════════════════════════════════════════════════════
+# ---------------------------------------------------------------------------
 
 def print_latex_tables(all_results: dict, k: int = 10):
     """Print LaTeX-ready tables for the paper."""
 
     birds = [b for b in BIRDS if b in all_results]
 
-    # ── Table 1: Feature correlations (displacement model only) ──
+    # Table 1: feature correlations (displacement model only)
     print("\n" + "=" * 80)
-    print("TABLE 1 — Raw Pearson correlations with trajectory variance (displacement)")
+    print("TABLE 1 - Raw Pearson correlations with trajectory variance (displacement)")
     print("=" * 80)
 
     header_labels = " & ".join(
@@ -398,7 +398,7 @@ def print_latex_tables(all_results: dict, k: int = 10):
         row = f"    {display} & " + " & ".join(parts) + " \\\\"
         print(row)
 
-    # Duration R² row
+    # Duration R2 row
     print(r"    \midrule")
     parts_r2 = []
     for bird_id in birds:
@@ -411,9 +411,9 @@ def print_latex_tables(all_results: dict, k: int = 10):
     print(f"    $R^2$(duration) & " + " & ".join(parts_r2) + " \\\\")
     print(r"    \bottomrule")
 
-    # ── Table 2: Baseline comparison ──
+    # Table 2: baseline comparison
     print("\n" + "=" * 80)
-    print("TABLE 2 — Baseline comparison")
+    print("TABLE 2 - Baseline comparison")
     print("=" * 80)
     print(r"    & \multicolumn{" + str(len(birds)) + r"}{c}{$|r|$ (spec.\ flatness)} "
           r"& \multicolumn{" + str(len(birds)) + r"}{c}{$d_r$ (song vs.\ call)} \\")
@@ -460,17 +460,17 @@ def print_summary_table(all_results: dict, k: int = 10):
     """Print a console-friendly summary table."""
     knn_key = f'kNN(k={k})'
 
-    print(f"\n{'═'*110}")
+    print(f"\n{'='*110}")
     print(f"  {'Method':<22} ", end="")
     for bird_id in BIRDS:
         if bird_id in all_results:
             lbl = all_results[bird_id]['label']
-            print(f"│ r(flat)_{lbl}  d_res_{lbl}  AUC_{lbl} ", end="")
+            print(f"| r(flat)_{lbl}  d_res_{lbl}  AUC_{lbl} ", end="")
     print()
-    print(f"  {'─'*22} ", end="")
+    print(f"  {'-'*22} ", end="")
     for bird_id in BIRDS:
         if bird_id in all_results:
-            print(f"│{'─'*32}", end="")
+            print(f"|{'-'*32}", end="")
     print()
 
     for method_key in ['Displacement', 'Gaussian OT', knn_key, 'Per-age OT']:
@@ -484,20 +484,20 @@ def print_summary_table(all_results: dict, k: int = 10):
                 rp = fc['spectral_flatness']['r']
                 cd = t2[method_key]['cohens_d_resid']
                 auc = t2[method_key]['auc_resid']
-                print(f"│ {rp:+.3f}    {cd:+.2f}    {auc:.3f} ", end="")
+                print(f"| {rp:+.3f}    {cd:+.2f}    {auc:.3f} ", end="")
             else:
-                print(f"│   --       --       --  ", end="")
+                print(f"|   --       --       --  ", end="")
         print()
-    print(f"{'═'*110}")
+    print(f"{'='*110}")
 
 
 def print_coupling_comparison(all_results: dict, birds: list[str], k: int = 10):
     """Print side-by-side comparison of OT vs kNN coupling for the displacement model."""
-    print(f"\n{'═'*90}")
+    print(f"\n{'='*90}")
     print(f"  OT vs kNN COUPLING COMPARISON (Displacement model only)")
-    print(f"{'═'*90}")
-    print(f"  {'Bird':<8} {'Metric':<22} {'OT coupling':>14} {'kNN coupling':>14} {'Δ':>10}")
-    print(f"  {'─'*8} {'─'*22} {'─'*14} {'─'*14} {'─'*10}")
+    print(f"{'='*90}")
+    print(f"  {'Bird':<8} {'Metric':<22} {'OT coupling':>14} {'kNN coupling':>14} {'delta':>10}")
+    print(f"  {'-'*8} {'-'*22} {'-'*14} {'-'*14} {'-'*10}")
 
     for bird in birds:
         key_ot = f"{bird}_ot"
@@ -523,21 +523,22 @@ def print_coupling_comparison(all_results: dict, birds: list[str], k: int = 10):
         auc_knn = t2_knn.get('auc_resid', float('nan'))
         print(f"  {'':8} {'AUC_res':<22} {auc_ot:14.3f} {auc_knn:14.3f} {auc_knn - auc_ot:+10.3f}")
 
-        # R²(duration)
+        # R2(duration)
         r2_ot = t2_ot.get('r2_duration', float('nan'))
         r2_knn = t2_knn.get('r2_duration', float('nan'))
-        print(f"  {'':8} {'R²(duration)':<22} {r2_ot:14.3f} {r2_knn:14.3f} {r2_knn - r2_ot:+10.3f}")
+        print(f"  {'':8} {'R2(duration)':<22} {r2_ot:14.3f} {r2_knn:14.3f} {r2_knn - r2_ot:+10.3f}")
 
-        print(f"  {'─'*8}{'─'*22}{'─'*14}{'─'*14}{'─'*10}")
+        print(f"  {'-'*8}{'-'*22}{'-'*14}{'-'*14}{'-'*10}")
 
-    print(f"{'═'*90}")
+    print(f"{'='*90}")
 
 
-# ═════════════════════════════════════════════════════════════════
+# ---------------------------------------------------------------------------
 # Main
-# ═════════════════════════════════════════════════════════════════
+# ---------------------------------------------------------------------------
 
 def main():
+    """CLI entry point for reproducing Tables 1 and 2."""
     parser = argparse.ArgumentParser(
         description="Unified evaluation for Interspeech 2026 paper",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -595,7 +596,7 @@ def main():
     print(f"  Total time: {total_time:.1f}s")
     print(f"{'#'*70}")
 
-    # ── Console summary ──
+    # Console summary
     if len(couplings) == 1:
         print_summary_table(all_results, k=args.k)
         print_latex_tables(all_results, k=args.k)
@@ -603,7 +604,7 @@ def main():
         # Side-by-side comparison for --coupling=both
         print_coupling_comparison(all_results, birds_to_run, k=args.k)
 
-    # ── Save JSON ──
+    # Save JSON
     save_results = {}
     for result_key, r in all_results.items():
         sr = dict(r)

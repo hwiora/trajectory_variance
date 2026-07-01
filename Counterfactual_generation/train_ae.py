@@ -10,8 +10,8 @@ Data sources:
                           (123 freq bins, variable time -> padded to --n_time)
 
 Usage:
-    python train_ae.py --bird R2915 --source h5
-    python train_ae.py --bird R2915 --source h5 --model_type vae --kl_weight 1e-3
+    python -m Counterfactual_generation.train_ae --bird R4634 --source h5
+    python -m Counterfactual_generation.train_ae --bird R4634 --source h5 --model_type vae --kl_weight 1e-3
 
 Output (in models/{ae|vae}_<bird>_<timestamp>/):
     - best.pt          : best model weights
@@ -561,7 +561,8 @@ def train(args):
         print(f'\nDone! Best val MSE: {best_val:.5f}')
 
 
-if __name__ == '__main__':
+def main():
+    """CLI entry point for training or encoding one bird-specific AE/VAE."""
     parser = argparse.ArgumentParser(description='Train Spectrogram Autoencoder')
     parser.add_argument('--bird', type=str, default='R5018')
     parser.add_argument('--source', type=str, default='h5', choices=['h5', 'precomputed'],
@@ -587,3 +588,7 @@ if __name__ == '__main__':
                         help='Optional output directory (default: ae_<bird>_<timestamp>)')
     args = parser.parse_args()
     train(args)
+
+
+if __name__ == '__main__':
+    main()

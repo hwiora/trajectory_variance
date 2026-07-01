@@ -1,5 +1,5 @@
 """
-compute_fad2.py — clean pooled FAD/FAD_inf evaluation.
+compute_fad2.py - clean pooled FAD/FAD_inf evaluation.
 
 This script computes ONLY pooled metrics (no per-target-age reports):
   - Full-sample FAD (CF vs real reconstructions)
@@ -8,13 +8,12 @@ This script computes ONLY pooled metrics (no per-target-age reports):
 
 Supported methods:
   - ot_flow
-  - latent_cfm
 
 Example:
-  python compute_fad2.py \
+  python -m Counterfactual_generation.compute_fad2 \
       --method ot_flow \
-      --ae_dir models/vae_R4951_20260224_035117 \
-      --flow_dir models/ot_flow_R4951_20260224_151200 \
+      --ae_dir Counterfactual_generation/models/vae_R4951 \
+      --flow_dir Counterfactual_generation/models/ot_flow_R4951_ot \
       --bird R4951 \
       --total_samples 2000
 """
@@ -22,7 +21,6 @@ Example:
 import argparse
 import json
 import os
-import sys
 from pathlib import Path
 
 import librosa
@@ -35,13 +33,6 @@ os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
 
 from .train_ae import SpectrogramAE, SpectrogramVAE
 from .models.flow import load_transport_model
-
-try:
-    from .train_latent_cfm import VelocityNetwork, generate_cf  # optional; not in this repo
-    _HAS_LCFM = True
-except ImportError:
-    _HAS_LCFM = False
-
 
 SAMPLE_RATE = 32000
 HOP_LENGTH = 128
@@ -202,22 +193,6 @@ def load_method(method: str, flow_dir: Path, device: torch.device):
     cfg = json.load(open(flow_dir / "config.json"))
     if method == "ot_flow":
         model = load_transport_model(cfg, device, weights_path=flow_dir / "best.pt")
-    elif method == "latent_cfm":
-        if not _HAS_LCFM:
-            raise ImportError(
-                "latent_cfm method requires train_latent_cfm.py which is not included "
-                "in this repository. Only 'ot_flow' is supported here."
-            )
-        model = VelocityNetwork(
-            latent_dim=cfg["latent_dim"],
-            hidden_dim=cfg["hidden_dim"],
-            num_blocks=cfg["num_blocks"],
-            time_embed_dim=cfg.get("embed_dim", 64),
-            age_embed_dim=cfg.get("embed_dim", 64),
-            p_uncond=cfg.get("p_uncond", 0.15),
-        ).to(device)
-        model.load_state_dict(torch.load(flow_dir / "best.pt", map_location=device, weights_only=True))
-        model.eval()
     else:
         raise ValueError(f"Unsupported method: {method}")
 
@@ -295,18 +270,7 @@ def main():
                 c = torch.tensor([[a_src, a_tgt]], device=device, dtype=torch.float32)
                 z_cf = model.generate(z_norm, c, steps=None, cfg_scale=None, solver=None)
             else:
-                cfg_scale = flow_cfg.get("cfg_scale", 3.0)
-                edit_strength = flow_cfg.get("edit_strength", 0.5)
-                steps = flow_cfg.get("steps", 50)
-                a_tgt_t = torch.tensor([a_tgt], device=device, dtype=torch.float32)
-                z_cf = generate_cf(
-                    model,
-                    z_norm,
-                    a_tgt_t,
-                    cfg_scale=cfg_scale,
-                    edit_strength=edit_strength,
-                    steps=steps,
-                )
+                raise ValueError(f"Unsupported method: {args.method}")
 
             spec_cf = ae.decode(z_cf * z_std + z_mean).squeeze(0).cpu().numpy()
             spec_cf = spec_cf * data_std + data_mean
@@ -377,9 +341,9 @@ def main():
     print("\n" + "=" * 60)
     print("Results")
     print("=" * 60)
-    print(f"FAD_inf (CF vs real):   {results['fad_inf']:.4f} (R²={results['fad_inf_r2']:.3f})")
+    print(f"FAD_inf (CF vs real):   {results['fad_inf']:.4f} (R2={results['fad_inf_r2']:.3f})")
     print(f"Full FAD (CF vs real):  {results['full_fad']:.4f}")
-    print(f"FAD_inf (split-half):   {results['baseline_fad_inf']:.4f} (R²={results['baseline_fad_inf_r2']:.3f})")
+    print(f"FAD_inf (split-half):   {results['baseline_fad_inf']:.4f} (R2={results['baseline_fad_inf_r2']:.3f})")
     print(f"Full FAD (split-half):  {results['baseline_full_fad']:.4f}")
     print(f"Saved: {out_path}")
 

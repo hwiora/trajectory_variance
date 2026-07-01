@@ -16,14 +16,15 @@ types) from call bursts (tet-tet-tet, same call repeated).
 
 Usage:
   # Step 1: Plot gap + diversity distributions (set thresholds empirically)
-  python label_song_calls.py --bird R2915 --mode plot --ae_dir models/ae_R2915_20260217_091904
+  python -m Counterfactual_generation.label_song_calls --bird R4634 --mode plot --ae_dir Counterfactual_generation/models/vae_R4634
 
   # Step 2: Label with chosen thresholds
-  python label_song_calls.py --bird R2915 --ae_dir models/ae_R2915_20260217_091904
+  python -m Counterfactual_generation.label_song_calls --bird R4634 --ae_dir Counterfactual_generation/models/vae_R4634
 
   # Step 3: All birds (provide ae_dir per bird or use auto-detect)
-  python label_song_calls.py --bird all
+  python -m Counterfactual_generation.label_song_calls --bird all
 """
+from __future__ import annotations
 
 import argparse
 import json
@@ -46,7 +47,6 @@ from .utils import DATA_ROOT
 # ═══════════════════════════ Bird configuration ═══════════════════════════
 
 BIRD_CONFIG = {
-    "R2915": {"hatch_datenum": 40674},
     "R4634": {"hatch_datenum": 41839},
     "R4951": {"hatch_datenum": 42086},
     "R5018": {"hatch_datenum": 42142},

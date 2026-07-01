@@ -24,19 +24,19 @@ Design principles:
 
 Usage:
     # Default comparison (all methods, k=5) — auto-discovers flow_dir
-    python baseline_comparison.py --bird R2915
+    python -m Counterfactual_generation.baseline_comparison --bird R4634
 
     # Explicit flow_dir
-    python baseline_comparison.py --bird R2915 --flow_dir models/ot_flow_R2915_20260222_110110
+    python -m Counterfactual_generation.baseline_comparison --bird R4634 --flow_dir Counterfactual_generation/models/ot_flow_R4634_ot
 
     # k-sweep experiment
-    python baseline_comparison.py --bird R2915 --k_sweep
+    python -m Counterfactual_generation.baseline_comparison --bird R4634 --k_sweep
 
     # Sample-size experiment
-    python baseline_comparison.py --bird R2915 --sample_size_experiment
+    python -m Counterfactual_generation.baseline_comparison --bird R4634 --sample_size_experiment
 
     # Pixel-space MSE diagnostic
-    python baseline_comparison.py --bird R2915 --pixel_mse
+    python -m Counterfactual_generation.baseline_comparison --bird R4634 --pixel_mse
 
     # MLP diagnostic (what does the model learn?)
     python baseline_comparison.py ... --diagnose
@@ -50,7 +50,6 @@ import torch.nn.functional as F
 import numpy as np
 from pathlib import Path
 from scipy.optimize import linear_sum_assignment
-from scipy import stats as scipy_stats
 from tqdm import tqdm
 
 import matplotlib
@@ -154,12 +153,10 @@ def _strict_ot_subset(sub_idx, ages, target_ages, seed=42):
 
 def load_data(flow_dir, bird, device, labels_dir='gold_standard_labels',
               ae_dir_override=None):
-    """Load latents, ages, labels, durations, and models.
+    """Load the aligned tensors and models used by evaluation baselines.
 
-    Song/call labels come from gold-standard bout-based labels
-    (pipeline order NPZ), not H5 cluster_id.
-
-    Returns a dict with everything needed for baseline comparison.
+    All returned arrays are in the ``latents.pt`` pipeline order. Song/call
+    labels come from the bout-based pipeline-order NPZ files.
     """
     flow_dir = Path(flow_dir)
     flow_config = json.load(open(flow_dir / 'config.json'))
@@ -223,8 +220,6 @@ def load_data(flow_dir, bird, device, labels_dir='gold_standard_labels',
         f"(train_ae.py --encode_only with the AE checkpoint trained on the current H5)."
     )
 
-    # Durations from latents.pt lengths (in frames -> seconds)
-    # Or from H5 if available. Use lengths as proxy (proportional to duration).
     durations = lengths.numpy().astype(np.float32)
 
     print(f"  Gold-standard labels: {labels_path}")
@@ -1878,13 +1873,14 @@ def run_mlp_diagnostic(data, n_samples=5000):
 # ============================================================================
 
 def main():
+    """CLI entry point for nonparametric baseline analyses and diagnostics."""
     parser = argparse.ArgumentParser(
         description='Nonparametric Baselines for Trajectory Variance',
         formatter_class=argparse.RawDescriptionHelpFormatter)
 
     # Required
     parser.add_argument('--bird', type=str, required=True,
-                        help='Bird ID (e.g. R2915). Gold-standard labels must exist.')
+                        help='Bird ID (e.g. R4634). Gold-standard labels must exist.')
     parser.add_argument('--flow_dir', type=str, default=None,
                         help='OT flow model dir. Auto-detected if not provided.')
     parser.add_argument('--labels_dir', type=str, default='gold_standard_labels',
