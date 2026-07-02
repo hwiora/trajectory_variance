@@ -43,7 +43,7 @@ trajectory_variance/
         └── ot_flow_R{4634,4951,5018}_{ot,knn}/  # Trained displacement-model checkpoints
 ```
 
-`vae_*/latents.pt` (~95–142 MB per bird) is not included in the GitHub repo due to size; request the latents from the author (see the Data section) and place each `latents.pt` next to its corresponding `best.pt` to skip re-encoding.
+`vae_*/latents.pt` (~95–148 MB per bird) is not included in the GitHub repo due to size; download the latents from Zenodo ([DOI 10.5281/zenodo.19922014](https://doi.org/10.5281/zenodo.19922014); see the Data section) and place each `latents.pt` next to its corresponding `best.pt` to skip re-encoding.
 
 ## Setup
 
@@ -85,19 +85,19 @@ The paper uses three zebra finch datasets (R4634 / R4951 / R5018; recorded 40–
 | Trained model weights (VAE + displacement) | this repo, under `Counterfactual_generation/models/` | `best.pt` + `config.json` per bird |
 | Cached spectral flatness | this repo, `models/spectral_flatness_<bird>.npz` | One value per vocalization, segment-aligned (from the H5) |
 | Song/call gold-standard labels | this repo, `gold_standard_labels/` | Bout-based heuristic |
-| Per-vocalization VAE latents (`latents.pt`) | from the author on request | ~95–142 MB per bird; over GitHub's file-size limit |
+| Per-vocalization VAE latents (`latents.pt`) | [Zenodo](https://doi.org/10.5281/zenodo.19922014) (DOI 10.5281/zenodo.19922014) | ~95–148 MB per bird; over GitHub's file-size limit |
 | Raw H5 spectrograms | not publicly released | Schema documented below for users training from their own data |
 | Raw audio (WAV/FLAC) | not yet released | Will accompany a future data release |
 
-**Latents (`latents.pt`):** available from the author on request. A citable archive will be published and this README updated with the DOI.
+**Latents (`latents.pt`):** published on Zenodo — DOI [10.5281/zenodo.19922014](https://doi.org/10.5281/zenodo.19922014) (CC-BY-4.0). Download `vae_latents.7z` and extract it. The archive bundles each bird's full `vae_<bird>/` folder (`best.pt` + `config.json` + `latents.pt`); the `best.pt` / `config.json` match this repo, so you only need the `latents.pt`.
 
-Once obtained, place each `latents.pt` next to its corresponding `best.pt`:
+After extracting the archive, place each `latents.pt` next to its corresponding `best.pt`:
 
 ```
 Counterfactual_generation/models/vae_<bird>/
 ├── best.pt        # in this repo
 ├── config.json    # in this repo
-└── latents.pt     # obtained separately (see Data section)
+└── latents.pt     # from Zenodo (see Data section)
 ```
 
 If you supply your own H5 files (matching the schema below), the training scripts will encode latents from scratch — you do not need to download `latents.pt`. The expected layout is:

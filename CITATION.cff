@@ -17,3 +17,11 @@ preferred-citation:
       orcid: "https://orcid.org/0009-0001-0691-6664"
   collection-title: "Proc. Interspeech 2026"
   year: 2026
+references:
+  - type: data
+    title: "Trajectory Variance — VAE Checkpoints and Per-Vocalization Latents"
+    authors:
+      - family-names: Lee
+        given-names: Kanghwi
+    doi: "10.5281/zenodo.19922014"
+    year: 2026
